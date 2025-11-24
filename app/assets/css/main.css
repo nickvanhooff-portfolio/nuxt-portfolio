@@ -1,0 +1,8 @@
+/* Minimal base styles after removing Tailwind/Nuxt UI */
+:root { --ui-primary: #111827; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell,
+    Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+}
