@@ -1,49 +1,63 @@
 <template>
-  <main class="container mx-auto min-h-screen max-w-6xl p-8">
-    <h1 class="text-4xl font-bold mb-8">Pages</h1>
-    
-    <!-- Loading state -->
-    <div v-if="!pages" class="text-center py-8">
-      <p class="text-gray-500">Loading pages...</p>
+  <main class="min-h-screen bg-neutral">
+    <div class="container-custom section-spacing">
+      <h1 class="text-section-mobile md:text-section text-primary font-title font-bold mb-12 md:mb-16">
+        Pages
+      </h1>
+      
+      <!-- Loading state -->
+      <div v-if="pending" class="text-center py-16">
+        <p class="text-primary/60">Loading pages...</p>
+      </div>
+      
+      <!-- Pages grid -->
+      <div 
+        v-else-if="pages && pages.length > 0" 
+        class="grid gap-8 md:grid-cols-2 lg:grid-cols-3"
+      >
+        <article 
+          v-for="page in pages" 
+          :key="page._id" 
+          class="bg-neutral border border-neutral-gray rounded-card p-6 md:p-8 hover:shadow-card-hover transition-all duration-300 hover:scale-[1.02]"
+        >
+          <nuxt-link :to="`/${page.slug.current}`" class="block space-y-4">
+            <h2 class="text-xl md:text-2xl font-title font-bold text-primary">
+              {{ page.title }}
+            </h2>
+            <p 
+              v-if="page.metaDescription" 
+              class="text-primary/70 text-body-mobile line-clamp-3"
+            >
+              {{ page.metaDescription }}
+            </p>
+            <div 
+              v-if="page.pageBuilder && page.pageBuilder.length > 0" 
+              class="text-ui-small text-primary/50"
+            >
+              {{ page.pageBuilder.length }} block{{ page.pageBuilder.length !== 1 ? 's' : '' }}
+            </div>
+          </nuxt-link>
+        </article>
+      </div>
+      
+      <!-- Error state -->
+      <div v-else-if="error" class="text-center py-16">
+        <p class="text-red-500 mb-4">Error loading pages:</p>
+        <p class="text-ui-small text-primary/60">{{ error?.message }}</p>
+      </div>
+      
+      <!-- No pages found -->
+      <div v-else class="text-center py-16">
+        <p class="text-primary/60 mb-4">No pages found.</p>
+        <p class="text-ui-small text-primary/40">Create a page in Sanity Studio first.</p>
+      </div>
     </div>
-    
-    <!-- Pages grid -->
-    <div v-else-if="pages && pages.length > 0" class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-      <article v-for="page in pages" :key="page._id" class="border rounded-lg p-6 hover:shadow-lg transition-shadow">
-        <nuxt-link :to="`/${page.slug.current}`" class="block">
-          <h2 class="text-xl font-semibold mb-2">{{ page.title }}</h2>
-          <p v-if="page.metaDescription" class="text-gray-600 mb-4">{{ page.metaDescription }}</p>
-          <div v-if="page.pageBuilder && page.pageBuilder.length > 0" class="text-sm text-gray-500">
-            {{ page.pageBuilder.length }} block{{ page.pageBuilder.length !== 1 ? 's' : '' }}
-          </div>
-        </nuxt-link>
-      </article>
-    </div>
-    
-    <!-- Error state -->
-    <div v-else-if="error" class="text-center py-8">
-      <p class="text-red-500 mb-4">Error loading pages:</p>
-      <p class="text-sm text-gray-600">{{ error.message }}</p>
-    </div>
-    
-    <!-- No pages found -->
-    <div v-else class="text-center py-8">
-      <p class="text-gray-500 mb-4">No pages found.</p>
-      <p class="text-sm text-gray-400">Create a page in Sanity Studio first.</p>
-    </div>
-    
-    <!-- Debug info -->
-    <details class="mt-8">
-      <summary class="cursor-pointer text-sm text-gray-500">Debug: Pages Data</summary>
-      <pre class="mt-2 text-xs bg-gray-100 p-4 rounded overflow-auto">{{ JSON.stringify(pages, null, 2) }}</pre>
-    </details>
   </main>
 </template>
 
 <script setup lang="ts">
 import type { SanityDocument } from '@sanity/client'
 import { createClient } from '@sanity/client'
-import imageUrlBuilder from '@sanity/image-url'
 import groq from 'groq'
 
 // Query for pages with page builder
@@ -63,7 +77,7 @@ const client = createClient({
   useCdn: true
 })
 
-const { data: pages, error } = await useAsyncData<SanityDocument[]>(
+const { data: pages, pending, error } = await useAsyncData<SanityDocument[]>(
   'pages',
   async () => {
     try {
@@ -78,7 +92,4 @@ const { data: pages, error } = await useAsyncData<SanityDocument[]>(
     }
   }
 )
-
-const urlFor = (source: any) =>
-  source ? imageUrlBuilder({ projectId: client.config().projectId!, dataset: client.config().dataset! }).image(source) : null
 </script>

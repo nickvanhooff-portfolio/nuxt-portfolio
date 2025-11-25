@@ -1,30 +1,40 @@
 <template>
-  <main v-if="page" class="min-h-screen">
-    <a href="/" class="block p-8 hover:underline">&larr; Back to pages</a>
-    
+  <main v-if="page" class="min-h-screen bg-neutral">
     <!-- Page Builder Blocks -->
-    <div v-if="page.pageBuilder && page.pageBuilder.length > 0">
-      <component
-        v-for="block in page.pageBuilder"
-        :key="block._key"
-        :is="renderBlock(block)"
-        :block="block"
-        :url-for="urlFor"
-      />
-    </div>
+    <PageBuilder
+      v-if="page.pageBuilder && page.pageBuilder.length > 0"
+      :blocks="page.pageBuilder"
+      :url-for="urlFor"
+    />
     
     <!-- Fallback if no blocks -->
-    <div v-else class="container mx-auto max-w-3xl p-8">
-      <h1 class="text-4xl font-bold mb-8">{{ page.title }}</h1>
-      <p v-if="page.metaDescription" class="text-lg text-gray-600">{{ page.metaDescription }}</p>
-      <p class="mt-4 text-gray-500">No content blocks added yet.</p>
+    <div v-else class="container-custom section-spacing">
+      <h1 class="text-section-mobile md:text-section text-primary font-title font-bold mb-6">
+        {{ page.title }}
+      </h1>
+      <p 
+        v-if="page.metaDescription" 
+        class="text-body text-primary/70 mb-8"
+      >
+        {{ page.metaDescription }}
+      </p>
+      <p class="text-primary/60">No content blocks added yet.</p>
     </div>
   </main>
   
   <!-- 404 if page not found -->
-  <div v-else class="container mx-auto max-w-3xl p-8">
-    <h1 class="text-4xl font-bold mb-8">Page not found</h1>
-    <a href="/" class="hover:underline">&larr; Back to pages</a>
+  <div v-else class="container-custom min-h-screen flex items-center justify-center">
+    <div class="text-center space-y-6">
+      <h1 class="text-section-mobile md:text-section text-primary font-title font-bold">
+        Page not found
+      </h1>
+      <nuxt-link 
+        to="/" 
+        class="inline-block text-accent hover:text-accent-dark transition-all duration-200 ease-out"
+      >
+        ← Back to home
+      </nuxt-link>
+    </div>
   </div>
 </template>
 
@@ -34,10 +44,6 @@ import { createClient } from '@sanity/client'
 import imageUrlBuilder from '@sanity/image-url'
 import type { SanityImageSource } from '@sanity/image-url/lib/types/types'
 import groq from 'groq'
-import HeroBlock from '~/components/HeroBlock.vue'
-import TextBlock from '~/components/TextBlock.vue'
-import ImageBlock from '~/components/ImageBlock.vue'
-import UnknownBlock from '~/components/UnknownBlock.vue'
 
 const PAGE_QUERY = groq`*[_type == "page" && slug.current == $slug][0]`
 const { params } = useRoute()
@@ -55,20 +61,17 @@ const { data: page } = await useAsyncData<SanityDocument>(
   () => client.fetch(PAGE_QUERY, params)
 )
 
+// SEO metadata
+useHead({
+  title: page.value ? `${page.value.title} - Portfolio` : 'Page Not Found',
+  meta: [
+    {
+      name: 'description',
+      content: page.value?.metaDescription || '',
+    },
+  ],
+})
+
 const urlFor = (source: SanityImageSource) =>
   imageUrlBuilder({ projectId: client.config().projectId!, dataset: client.config().dataset! }).image(source)
-
-// Block component mapping
-const renderBlock = (block: any) => {
-  switch (block._type) {
-    case 'heroBlock':
-      return HeroBlock
-    case 'textBlock':
-      return TextBlock
-    case 'imageBlock':
-      return ImageBlock
-    default:
-      return UnknownBlock
-  }
-}
 </script>

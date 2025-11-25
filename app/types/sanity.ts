@@ -1,0 +1,85 @@
+/**
+ * Type definitions for Sanity CMS content
+ * Based on official Sanity documentation
+ */
+
+import type { SanityImageSource } from '@sanity/image-url/lib/types/types'
+import type { Component } from 'vue'
+
+// Base Sanity image reference
+export interface SanityImageAsset {
+  _type: 'reference' | 'image'
+  asset?: {
+    _type: 'reference'
+    _ref: string
+  }
+  [key: string]: unknown
+}
+
+// Base Sanity block structure
+export interface SanityBlock {
+  _type: string
+  _key?: string
+  _id?: string
+  [key: string]: unknown
+}
+
+// Hero block type
+export interface HeroBlock extends SanityBlock {
+  _type: 'heroBlock'
+  heading: string
+  subheading?: string
+  backgroundImage?: SanityImageAsset
+  ctaButton?: {
+    text: string
+    url: string
+  }
+}
+
+// Text block type
+export interface TextBlock extends SanityBlock {
+  _type: 'textBlock'
+  heading?: string
+  content?: Array<Record<string, unknown>>
+  textAlignment?: 'left' | 'center' | 'right'
+  backgroundColor?: 'white' | 'gray' | 'primary'
+}
+
+// Image block type
+export interface ImageBlock extends SanityBlock {
+  _type: 'imageBlock'
+  image: SanityImageAsset
+  altText: string
+  caption?: string
+  imageSize?: 'small' | 'medium' | 'large' | 'full'
+  imageAlignment?: 'left' | 'center' | 'right'
+}
+
+// Projects block type
+export interface ProjectsBlock extends SanityBlock {
+  _type: 'projectsBlock'
+  title?: string
+  maxProjects?: number
+  showAllProjects?: boolean
+  filterByStatus?: 'all' | 'completed' | 'in-progress' | 'school-project'
+}
+
+// URL builder function type
+export type UrlBuilder = (source: SanityImageSource) => {
+  width: (width: number) => {
+    height: (height: number) => {
+      url: () => string
+    }
+    url: () => string
+  }
+  url: () => string
+}
+
+// Block component props interface
+export interface BlockComponentProps {
+  block: SanityBlock
+  urlFor: UrlBuilder
+}
+
+// Component type for block mapping
+export type BlockComponent = Component<BlockComponentProps>

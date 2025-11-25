@@ -26,11 +26,11 @@
         <img
           v-if="block.asset"
           :src="urlFor(block.asset).width(800).url()"
-          :alt="block.alt || ''"
+          :alt="(block.alt as string) || ''"
           class="max-w-full h-auto rounded-lg"
-        />
+        >
         <p v-if="block.caption" class="text-center text-gray-600 italic mt-2">
-          {{ block.caption }}
+          {{ block.caption as string }}
         </p>
       </div>
     </template>
@@ -38,9 +38,30 @@
 </template>
 
 <script setup lang="ts">
+import type { UrlBuilder } from '~/types/sanity'
+
+interface PortableTextBlock {
+  _type: string
+  _key?: string
+  style?: string
+  children?: Array<{
+    _type: string
+    _key?: string
+    text?: string
+    marks?: Array<{ _type: string }>
+  }>
+  asset?: {
+    _ref: string
+    _type: 'reference'
+  }
+  alt?: string
+  caption?: string
+  [key: string]: unknown
+}
+
 interface Props {
-  blocks: any[]
-  urlFor?: (source: any) => any
+  blocks: PortableTextBlock[]
+  urlFor?: UrlBuilder
 }
 
 const props = defineProps<Props>()
@@ -105,5 +126,13 @@ const getMarkClasses = (markType: string) => {
   }
 }
 
-const urlFor = props.urlFor || ((source: any) => ({ url: () => '' }))
+const urlFor: UrlBuilder = props.urlFor || ((_source) => ({
+  width: () => ({
+    height: () => ({
+      url: () => ''
+    }),
+    url: () => ''
+  }),
+  url: () => ''
+}))
 </script>
