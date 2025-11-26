@@ -5,7 +5,7 @@
   >
     <div class="container-custom">
       <div 
-        class="max-w-4xl mx-auto space-y-8"
+        class="max-w-6xl mx-auto space-y-8"
         :class="textAlignmentClass"
       >
         <h2 

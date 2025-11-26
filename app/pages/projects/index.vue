@@ -1,25 +1,26 @@
 <template>
   <main class="min-h-screen bg-neutral">
     <div class="container-custom section-spacing">
-      <h1 class="text-section-mobile md:text-section text-primary font-title font-bold mb-12 md:mb-16">
-        Projects
-      </h1>
-      
-      <!-- Loading state -->
-      <div v-if="pending" class="text-center py-16">
-        <p class="text-primary/60">Loading projects...</p>
-      </div>
-      
-      <!-- Error state -->
-      <div v-else-if="error" class="text-center py-16">
-        <p class="text-red-500">Error loading projects: {{ error?.message }}</p>
-      </div>
-      
-      <!-- Projects grid -->
-      <div 
-        v-else-if="projects && projects.length > 0" 
-        class="grid gap-8 md:grid-cols-2"
-      >
+      <div class="max-w-6xl mx-auto space-y-12 md:space-y-16">
+        <h1 class="text-section-mobile md:text-section text-primary font-title font-bold text-center">
+          Projects
+        </h1>
+        
+        <!-- Loading state -->
+        <div v-if="pending" class="text-center py-16">
+          <p class="text-primary/60">Loading projects...</p>
+        </div>
+        
+        <!-- Error state -->
+        <div v-else-if="error" class="text-center py-16">
+          <p class="text-red-500">Error loading projects: {{ error?.message }}</p>
+        </div>
+        
+        <!-- Projects grid -->
+        <div 
+          v-else-if="projects && projects.length > 0" 
+          class="grid gap-6 md:gap-8 md:grid-cols-2 lg:grid-cols-3"
+        >
         <article
           v-for="project in projects"
           :key="project._id"
@@ -102,9 +103,10 @@
         </article>
       </div>
       
-      <!-- Empty state -->
-      <div v-else class="text-center py-16">
-        <p class="text-primary/60">No projects found.</p>
+        <!-- Empty state -->
+        <div v-else class="text-center py-16">
+          <p class="text-primary/60">No projects found.</p>
+        </div>
       </div>
     </div>
   </main>

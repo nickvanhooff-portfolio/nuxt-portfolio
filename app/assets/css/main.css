@@ -6,3 +6,50 @@ body {
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell,
     Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji";
 }
+
+/* Container utilities */
+.container-custom {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container-custom {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-custom {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Content container - combines container-custom with max-width and centering */
+.container-content {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  max-width: 72rem; /* max-w-6xl = 72rem */
+}
+
+@media (min-width: 640px) {
+  .container-content {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-content {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}

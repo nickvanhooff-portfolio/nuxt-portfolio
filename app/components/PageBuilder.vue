@@ -17,6 +17,7 @@ import BlocksHeroBlock from '~/components/blocks/HeroBlock.vue'
 import BlocksTextBlock from '~/components/blocks/TextBlock.vue'
 import BlocksImageBlock from '~/components/blocks/ImageBlock.vue'
 import BlocksProjectsBlock from '~/components/blocks/ProjectsBlock.vue'
+import BlocksTechStackBlock from '~/components/blocks/TechStackBlock.vue'
 import BlocksUnknownBlock from '~/components/blocks/UnknownBlock.vue'
 
 interface Props {
@@ -34,6 +35,7 @@ const blockComponentMap: Record<string, BlockComponent> = {
   textBlock: BlocksTextBlock,
   imageBlock: BlocksImageBlock,
   projectsBlock: BlocksProjectsBlock,
+  techStackBlock: BlocksTechStackBlock,
 }
 
 /**

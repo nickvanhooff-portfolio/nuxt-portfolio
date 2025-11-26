@@ -1,20 +1,21 @@
 <template>
   <main class="min-h-screen bg-neutral">
     <div class="container-custom section-spacing">
-      <h1 class="text-section-mobile md:text-section text-primary font-title font-bold mb-12 md:mb-16">
-        Pages
-      </h1>
-      
-      <!-- Loading state -->
-      <div v-if="pending" class="text-center py-16">
-        <p class="text-primary/60">Loading pages...</p>
-      </div>
-      
-      <!-- Pages grid -->
-      <div 
-        v-else-if="pages && pages.length > 0" 
-        class="grid gap-8 md:grid-cols-2 lg:grid-cols-3"
-      >
+      <div class="max-w-6xl mx-auto space-y-12 md:space-y-16">
+        <h1 class="text-section-mobile md:text-section text-primary font-title font-bold text-center">
+          Pages
+        </h1>
+        
+        <!-- Loading state -->
+        <div v-if="pending" class="text-center py-16">
+          <p class="text-primary/60">Loading pages...</p>
+        </div>
+        
+        <!-- Pages grid -->
+        <div 
+          v-else-if="pages && pages.length > 0" 
+          class="grid gap-6 md:gap-8 md:grid-cols-2 lg:grid-cols-3"
+        >
         <article 
           v-for="page in pages" 
           :key="page._id" 
@@ -40,16 +41,17 @@
         </article>
       </div>
       
-      <!-- Error state -->
-      <div v-else-if="error" class="text-center py-16">
-        <p class="text-red-500 mb-4">Error loading pages:</p>
-        <p class="text-ui-small text-primary/60">{{ error?.message }}</p>
-      </div>
-      
-      <!-- No pages found -->
-      <div v-else class="text-center py-16">
-        <p class="text-primary/60 mb-4">No pages found.</p>
-        <p class="text-ui-small text-primary/40">Create a page in Sanity Studio first.</p>
+        <!-- Error state -->
+        <div v-else-if="error" class="text-center py-16">
+          <p class="text-red-500 mb-4">Error loading pages:</p>
+          <p class="text-ui-small text-primary/60">{{ error?.message }}</p>
+        </div>
+        
+        <!-- No pages found -->
+        <div v-else class="text-center py-16">
+          <p class="text-primary/60 mb-4">No pages found.</p>
+          <p class="text-ui-small text-primary/40">Create a page in Sanity Studio first.</p>
+        </div>
       </div>
     </div>
   </main>

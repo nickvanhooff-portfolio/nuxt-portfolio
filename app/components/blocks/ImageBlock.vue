@@ -1,10 +1,11 @@
 <template>
   <section class="section-spacing bg-neutral">
     <div class="container-custom">
-      <div 
-        class="relative"
-        :class="containerAlignmentClass"
-      >
+      <div class="max-w-6xl mx-auto">
+        <div 
+          class="relative"
+          :class="containerAlignmentClass"
+        >
         <div 
           v-if="block.image" 
           class="relative group"
@@ -23,6 +24,7 @@
         >
           {{ block.caption }}
         </p>
+        </div>
       </div>
     </div>
   </section>

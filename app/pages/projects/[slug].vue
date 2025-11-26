@@ -101,9 +101,17 @@
         </div>
       </div>
 
-      <!-- Content -->
+      <!-- Page Builder Content -->
       <div 
-        v-if="project.content && project.content.length > 0" 
+        v-if="project.pageBuilder && project.pageBuilder.length > 0" 
+        class="mb-12 md:mb-16"
+      >
+        <AppPageBuilder :blocks="project.pageBuilder" :url-for="urlFor" />
+      </div>
+
+      <!-- Legacy Content (fallback if pageBuilder is not used) -->
+      <div 
+        v-else-if="project.content && project.content.length > 0" 
         class="prose prose-lg max-w-none mb-12 md:mb-16"
       >
         <UiSanityContent :blocks="project.content" :url-for="urlFor" />
@@ -168,6 +176,7 @@ import groq from 'groq'
 import UiSanityContent from '~/components/ui/SanityContent.vue'
 import UiButton from '~/components/ui/Button.vue'
 import UiTechBadge from '~/components/ui/TechBadge.vue'
+import AppPageBuilder from '~/components/PageBuilder.vue'
 
 const PROJECT_QUERY = groq`*[_type == "project" && slug.current == $slug][0] {
   _id,
@@ -183,7 +192,8 @@ const PROJECT_QUERY = groq`*[_type == "project" && slug.current == $slug][0] {
   endDate,
   status,
   tags,
-  content
+  content,
+  pageBuilder
 }`
 
 const { params } = useRoute()

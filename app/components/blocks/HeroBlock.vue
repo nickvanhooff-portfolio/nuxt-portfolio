@@ -16,7 +16,7 @@
     
     <!-- Content -->
     <div class="container-custom relative z-10 text-center">
-      <div class="max-w-4xl mx-auto space-y-8">
+      <div class="max-w-6xl mx-auto space-y-8">
         <h1 
           class="text-hero-mobile md:text-hero text-neutral font-title font-bold animate-fade-in"
         >

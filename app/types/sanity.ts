@@ -64,6 +64,26 @@ export interface ProjectsBlock extends SanityBlock {
   filterByStatus?: 'all' | 'completed' | 'in-progress' | 'school-project'
 }
 
+// Tech Stack block type
+export interface TechStackItem {
+  name: string
+  icon?: SanityImageAsset
+}
+
+export interface TechStackCategory {
+  categoryName: string
+  items: TechStackItem[]
+}
+
+export interface TechStackBlock extends SanityBlock {
+  _type: 'techStackBlock'
+  heading?: string
+  description?: string
+  categories: TechStackCategory[]
+  layout?: 'grid' | 'list'
+  backgroundColor?: 'white' | 'gray' | 'primary'
+}
+
 // URL builder function type
 export type UrlBuilder = (source: SanityImageSource) => {
   width: (width: number) => {

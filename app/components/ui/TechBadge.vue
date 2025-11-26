@@ -1,6 +1,8 @@
 <template>
   <span :class="badgeClasses">
-    {{ label }}
+    <slot name="icon" />
+    <span v-if="label">{{ label }}</span>
+    <slot />
   </span>
 </template>
 
@@ -15,7 +17,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const badgeClasses = computed(() => {
-  const base = 'inline-flex items-center px-3 py-1 rounded-badge text-xs font-medium uppercase tracking-wide transition-all duration-200 ease-out'
+  const base = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-badge text-xs font-medium uppercase tracking-wide transition-all duration-200 ease-out'
   
   const variants: Record<string, string> = {
     default: 'bg-neutral-light text-primary',
