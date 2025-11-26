@@ -83,3 +83,4 @@ export interface BlockComponentProps {
 
 // Component type for block mapping
 export type BlockComponent = Component<BlockComponentProps>
+
