@@ -28,11 +28,11 @@
 </template>
 
 <script setup lang="ts">
-import type { TextBlock, UrlBuilder } from '~/types/sanity'
+import type { Text, UrlBuilder } from '~/types/sanity'
 import UiSanityContent from '~/components/ui/SanityContent.vue'
 
 interface Props {
-  block: TextBlock
+  block: Text
   urlFor: UrlBuilder
 }
 

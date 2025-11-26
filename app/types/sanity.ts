@@ -24,9 +24,9 @@ export interface SanityBlock {
   [key: string]: unknown
 }
 
-// Hero block type
-export interface HeroBlock extends SanityBlock {
-  _type: 'heroBlock'
+// Hero type
+export interface Hero extends SanityBlock {
+  _type: 'hero'
   heading: string
   subheading?: string
   backgroundImage?: SanityImageAsset
@@ -36,18 +36,18 @@ export interface HeroBlock extends SanityBlock {
   }
 }
 
-// Text block type
-export interface TextBlock extends SanityBlock {
-  _type: 'textBlock'
+// Text type
+export interface Text extends SanityBlock {
+  _type: 'richText'
   heading?: string
   content?: Array<Record<string, unknown>>
   textAlignment?: 'left' | 'center' | 'right'
   backgroundColor?: 'white' | 'gray' | 'primary'
 }
 
-// Image block type
-export interface ImageBlock extends SanityBlock {
-  _type: 'imageBlock'
+// Image type
+export interface Image extends SanityBlock {
+  _type: 'contentImage'
   image: SanityImageAsset
   altText: string
   caption?: string
@@ -55,16 +55,16 @@ export interface ImageBlock extends SanityBlock {
   imageAlignment?: 'left' | 'center' | 'right'
 }
 
-// Projects block type
-export interface ProjectsBlock extends SanityBlock {
-  _type: 'projectsBlock'
+// Projects type
+export interface Projects extends SanityBlock {
+  _type: 'projects'
   title?: string
   maxProjects?: number
   showAllProjects?: boolean
   filterByStatus?: 'all' | 'completed' | 'in-progress' | 'school-project'
 }
 
-// Tech Stack block type
+// Tech Stack type
 export interface TechStackItem {
   name: string
   icon?: SanityImageAsset
@@ -75,8 +75,8 @@ export interface TechStackCategory {
   items: TechStackItem[]
 }
 
-export interface TechStackBlock extends SanityBlock {
-  _type: 'techStackBlock'
+export interface TechStack extends SanityBlock {
+  _type: 'techStack'
   heading?: string
   description?: string
   categories: TechStackCategory[]

@@ -109,10 +109,10 @@
 </template>
 
 <script setup lang="ts">
-import type { TechStackBlock, UrlBuilder } from '~/types/sanity'
+import type { TechStack, UrlBuilder } from '~/types/sanity'
 
 interface Props {
-  block: TechStackBlock
+  block: TechStack
   urlFor: UrlBuilder
 }
 

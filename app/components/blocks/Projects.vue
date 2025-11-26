@@ -149,11 +149,11 @@
 import type { SanityDocument } from '@sanity/client'
 import { createClient } from '@sanity/client'
 import groq from 'groq'
-import type { ProjectsBlock, UrlBuilder } from '~/types/sanity'
+import type { Projects, UrlBuilder } from '~/types/sanity'
 import UiTechBadge from '~/components/ui/TechBadge.vue'
 
 interface Props {
-  block: ProjectsBlock
+  block: Projects
   urlFor: UrlBuilder
 }
 

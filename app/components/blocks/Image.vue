@@ -31,10 +31,10 @@
 </template>
 
 <script setup lang="ts">
-import type { ImageBlock, UrlBuilder } from '~/types/sanity'
+import type { Image, UrlBuilder } from '~/types/sanity'
 
 interface Props {
-  block: ImageBlock
+  block: Image
   urlFor: UrlBuilder
 }
 

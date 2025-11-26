@@ -6,13 +6,13 @@ export function useBlockResolver() {
   /**
    * Resolves a block type to its corresponding Vue component
    * Uses Nuxt's auto-import system for dynamic component resolution
-   * @param blockType - The Sanity block type (e.g., 'heroBlock', 'textBlock')
+   * @param blockType - The Sanity block type (e.g., 'hero', 'text', 'techStack')
    * @returns The resolved component or null if not found
    */
   const resolveBlockComponent = (blockType: string) => {
     try {
-      // Convert blockType from camelCase to PascalCase
-      // e.g., 'heroBlock' -> 'HeroBlock'
+      // Convert blockType to PascalCase
+      // e.g., 'hero' -> 'Hero', 'techStack' -> 'TechStack'
       const componentName = blockType
         .split(/(?=[A-Z])/)
         .map((part) => part.charAt(0).toUpperCase() + part.slice(1))

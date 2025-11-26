@@ -13,11 +13,11 @@
 <script setup lang="ts">
 import type { BlockComponent, SanityBlock, UrlBuilder } from '~/types/sanity'
 import { useBlockResolver } from '~/composables/useBlockResolver'
-import BlocksHeroBlock from '~/components/blocks/HeroBlock.vue'
-import BlocksTextBlock from '~/components/blocks/TextBlock.vue'
-import BlocksImageBlock from '~/components/blocks/ImageBlock.vue'
-import BlocksProjectsBlock from '~/components/blocks/ProjectsBlock.vue'
-import BlocksTechStackBlock from '~/components/blocks/TechStackBlock.vue'
+import BlocksHero from '~/components/blocks/Hero.vue'
+import BlocksText from '~/components/blocks/Text.vue'
+import BlocksImage from '~/components/blocks/Image.vue'
+import BlocksProjects from '~/components/blocks/Projects.vue'
+import BlocksTechStack from '~/components/blocks/TechStack.vue'
 import BlocksUnknownBlock from '~/components/blocks/UnknownBlock.vue'
 
 interface Props {
@@ -31,11 +31,11 @@ const { resolveBlockComponent } = useBlockResolver()
 // Manual component mapping for type safety and explicit imports
 // Nuxt auto-imports work, but explicit imports ensure better tree-shaking
 const blockComponentMap: Record<string, BlockComponent> = {
-  heroBlock: BlocksHeroBlock,
-  textBlock: BlocksTextBlock,
-  imageBlock: BlocksImageBlock,
-  projectsBlock: BlocksProjectsBlock,
-  techStackBlock: BlocksTechStackBlock,
+  hero: BlocksHero,
+  richText: BlocksText,
+  contentImage: BlocksImage,
+  projects: BlocksProjects,
+  techStack: BlocksTechStack,
 }
 
 /**
