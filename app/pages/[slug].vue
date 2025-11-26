@@ -4,7 +4,6 @@
     <PageBuilder
       v-if="page.pageBuilder && page.pageBuilder.length > 0"
       :blocks="page.pageBuilder"
-      :url-for="urlFor"
     />
     
     <!-- Fallback if no blocks -->
@@ -41,8 +40,6 @@
 <script setup lang="ts">
 import type { SanityDocument } from '@sanity/client'
 import { createClient } from '@sanity/client'
-import imageUrlBuilder from '@sanity/image-url'
-import type { SanityImageSource } from '@sanity/image-url/lib/types/types'
 import groq from 'groq'
 
 const PAGE_QUERY = groq`*[_type == "page" && slug.current == $slug][0]`
@@ -72,6 +69,4 @@ useHead({
   ],
 })
 
-const urlFor = (source: SanityImageSource) =>
-  imageUrlBuilder({ projectId: client.config().projectId!, dataset: client.config().dataset! }).image(source)
 </script>

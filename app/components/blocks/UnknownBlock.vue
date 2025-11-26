@@ -22,11 +22,10 @@
 </template>
 
 <script setup lang="ts">
-import type { SanityBlock, UrlBuilder } from '~/types/sanity'
+import type { SanityBlock } from '~/types/sanity'
 
 interface Props {
   block: SanityBlock
-  urlFor: UrlBuilder
 }
 
 defineProps<Props>()

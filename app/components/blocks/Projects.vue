@@ -1,4 +1,5 @@
 <template>
+  {{ projects }}
   <section class="section-spacing bg-neutral relative overflow-hidden">
     <!-- Subtle background gradient -->
     <div class="absolute inset-0 opacity-20">
@@ -55,9 +56,15 @@
               v-if="project.featuredImage" 
               class="project-image-container"
             >
-              <img
+              <NuxtImg
                 :src="urlFor(project.featuredImage).width(600).height(400).url()"
+                sizes="100vw md:350px lg:400px"
+                width="500"
+                height="300"
                 :alt="project.title"
+                format="webp"
+                loading="eager"
+                fetchpriority="high"
                 class="project-image"
               />
               <div class="project-image-overlay" />
@@ -154,10 +161,11 @@ import UiTechBadge from '~/components/ui/TechBadge.vue'
 
 interface Props {
   block: Projects
-  urlFor: UrlBuilder
 }
 
 const props = defineProps<Props>()
+
+const urlFor = useImageUrl()
 
 const runtime = useRuntimeConfig()
 const client = createClient({

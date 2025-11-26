@@ -28,14 +28,20 @@
 
     <!-- Optional background image -->
     <div 
-      v-if="block.backgroundImage && urlFor" 
+      v-if="block.backgroundImage" 
       class="absolute inset-0 z-0"
     >
-      <img
+      <NuxtImg
         :src="urlFor(block.backgroundImage).width(1920).height(1080).url()"
         :alt="block.heading || 'Hero background'"
         class="w-full h-full object-cover opacity-10"
-      >
+        sizes="100vw"
+        width="1920"
+        height="1080"
+        format="webp"
+        loading="eager"
+        fetchpriority="high"
+      />
     </div>
     
     <!-- Main content -->
@@ -108,14 +114,15 @@
 </template>
 
 <script setup lang="ts">
-import type { Hero, UrlBuilder } from '~/types/sanity'
+import type { Hero } from '~/types/sanity'
 
 interface Props {
   block: Hero
-  urlFor: UrlBuilder
 }
 
 defineProps<Props>()
+
+const urlFor = useImageUrl()
 </script>
 
 <style scoped>

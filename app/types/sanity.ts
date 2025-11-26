@@ -98,7 +98,7 @@ export type UrlBuilder = (source: SanityImageSource) => {
 // Block component props interface
 export interface BlockComponentProps {
   block: SanityBlock
-  urlFor: UrlBuilder
+  urlFor?: UrlBuilder
 }
 
 // Component type for block mapping

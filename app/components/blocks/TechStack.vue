@@ -80,10 +80,14 @@
                     v-if="item.icon" 
                     class="tech-item-icon"
                   >
-                    <img
+                    <NuxtImg
                       :src="urlFor(item.icon).width(40).height(40).url()"
                       :alt="`${item.name} icon`"
                       class="w-10 h-10 object-contain"
+                      sizes="40px"
+                      width="40"
+                      height="40"
+                      format="webp"
                     />
                   </div>
                   <span class="tech-item-name">{{ item.name }}</span>
@@ -109,14 +113,15 @@
 </template>
 
 <script setup lang="ts">
-import type { TechStack, UrlBuilder } from '~/types/sanity'
+import type { TechStack } from '~/types/sanity'
 
 interface Props {
   block: TechStack
-  urlFor: UrlBuilder
 }
 
 const props = defineProps<Props>()
+
+const urlFor = useImageUrl()
 
 const layout = computed(() => props.block.layout || 'grid')
 

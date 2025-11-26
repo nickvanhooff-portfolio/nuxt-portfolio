@@ -11,11 +11,15 @@
           class="relative group"
           :class="imageSizeClass"
         >
-          <img
-            :src="imageUrl"
+          <NuxtImg
+            :src="urlFor(block.image).width(1200).height(800).url()"
             :alt="block.altText || 'Image'"
             class="rounded-card shadow-card w-full h-auto object-cover transition-transform duration-300 group-hover:scale-[1.01]"
-          >
+            sizes="100vw md:500px lg:600px"
+            width="1200"
+            height="800"
+            format="webp"
+          />
         </div>
         
         <p 
@@ -31,21 +35,15 @@
 </template>
 
 <script setup lang="ts">
-import type { Image, UrlBuilder } from '~/types/sanity'
+import type { Image } from '~/types/sanity'
 
 interface Props {
   block: Image
-  urlFor: UrlBuilder
 }
 
 const props = defineProps<Props>()
 
-const imageUrl = computed(() => {
-  if (props.block.image && props.urlFor) {
-    return props.urlFor(props.block.image).width(1200).height(800).url()
-  }
-  return ''
-})
+const urlFor = useImageUrl()
 
 const imageSizeClass = computed(() => {
   switch (props.block.imageSize) {

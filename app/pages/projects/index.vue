@@ -115,8 +115,6 @@
 <script setup lang="ts">
 import type { SanityDocument } from '@sanity/client'
 import { createClient } from '@sanity/client'
-import imageUrlBuilder from '@sanity/image-url'
-import type { SanityImageSource } from '@sanity/image-url/lib/types/types'
 import groq from 'groq'
 import UiTechBadge from '~/components/ui/TechBadge.vue'
 
@@ -145,8 +143,7 @@ const { data: projects, pending, error } = await useAsyncData<SanityDocument[]>(
   () => client.fetch(PROJECTS_QUERY)
 )
 
-const urlFor = (source: SanityImageSource) =>
-  imageUrlBuilder({ projectId: client.config().projectId!, dataset: client.config().dataset! }).image(source)
+const urlFor = useImageUrl()
 
 const formatStatus = (status: string): string => {
   return status

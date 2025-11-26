@@ -1,167 +1,217 @@
 <template>
   <main v-if="project" class="min-h-screen bg-neutral">
-    <div class="container-custom pt-12 pb-section">
-      <!-- Back link -->
-      <nuxt-link 
-        to="/projects" 
-        class="inline-flex items-center text-primary/60 hover:text-accent transition-all duration-200 ease-out mb-12 group"
-      >
-        <span class="mr-2 group-hover:-translate-x-1 transition-transform duration-200">←</span>
-        <span>Back to projects</span>
-      </nuxt-link>
-
+    <!-- Hero Section with Featured Image -->
+    <section class="relative">
       <!-- Featured Image -->
       <div 
         v-if="project.featuredImage" 
-        class="mb-12 md:mb-16 rounded-card overflow-hidden shadow-card"
+        class="relative w-full h-[50vh] min-h-[400px] max-h-[600px] overflow-hidden"
       >
-        <img
-          :src="urlFor(project.featuredImage).width(1200).height(675).url()"
+        <NuxtImg
+          :src="urlFor(project.featuredImage).width(1920).height(1080).url()"
           :alt="project.title"
-          class="w-full h-auto"
-        >
+          class="w-full h-full object-cover"
+          sizes="100vw"
+          width="1920"
+          height="1080"
+          format="webp"
+          loading="eager"
+          fetchpriority="high"
+        />
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-primary/20 to-primary/80" />
       </div>
 
-      <!-- Project Header -->
-      <header class="mb-12 md:mb-16 space-y-6">
-        <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-          <h1 class="text-section-mobile md:text-hero text-primary font-title font-bold">
-            {{ project.title }}
-          </h1>
-          <span
-            v-if="project.status"
-            class="text-sm px-4 py-2 rounded-full font-medium self-start"
-            :class="getStatusClass(project.status)"
+      <!-- Project Header Overlay -->
+      <div class="container-content relative -mt-32 md:-mt-48 z-10">
+        <div class="bg-neutral rounded-2xl shadow-2xl p-8 md:p-12 border border-neutral-gray">
+          <!-- Back link -->
+          <NuxtLink
+            to="/projects" 
+            class="inline-flex items-center gap-2 text-primary/60 hover:text-accent transition-colors mb-8 group"
           >
-            {{ formatStatus(project.status) }}
-          </span>
-        </div>
+            <svg class="w-5 h-5 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            <span class="font-medium">Back to projects</span>
+          </NuxtLink>
 
-        <!-- Meta information -->
-        <div 
-          v-if="project.startDate || project.endDate" 
-          class="flex flex-wrap gap-6 text-ui text-primary/60"
-        >
-          <div v-if="project.startDate" class="flex items-center">
-            <span class="font-medium">Start:</span>
-            <span class="ml-2">{{ formatDate(project.startDate) }}</span>
+          <!-- Title and Status -->
+          <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-8">
+            <div class="flex-1">
+              <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-primary mb-4 leading-tight">
+                {{ project.title }}
+              </h1>
+              <p 
+                v-if="project.description" 
+                class="text-xl text-primary/80 leading-relaxed max-w-3xl"
+              >
+                {{ project.description }}
+              </p>
+            </div>
+            <div class="flex flex-col gap-3">
+              <span
+                v-if="project.status"
+                class="inline-flex items-center justify-center px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap"
+                :class="getStatusClass(project.status)"
+              >
+                {{ formatStatus(project.status) }}
+              </span>
+              <!-- Date Range -->
+              <div 
+                v-if="project.startDate || project.endDate" 
+                class="flex flex-col gap-2 text-sm text-primary/60"
+              >
+                <div v-if="project.startDate" class="flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <span>{{ formatDate(project.startDate) }}</span>
+                </div>
+                <div v-if="project.endDate" class="flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>{{ formatDate(project.endDate) }}</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <div v-if="project.endDate" class="flex items-center">
-            <span class="font-medium">End:</span>
-            <span class="ml-2">{{ formatDate(project.endDate) }}</span>
+
+          <!-- Action Buttons -->
+          <div class="flex flex-wrap gap-4 pb-8 border-b border-neutral-gray">
+            <a
+              v-if="project.githubUrl"
+              :href="project.githubUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-neutral rounded-lg font-semibold hover:bg-primary/90 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            >
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+              </svg>
+              View on GitHub
+            </a>
+            <a
+              v-if="project.demoUrl"
+              :href="project.demoUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 px-6 py-3 bg-accent text-neutral rounded-lg font-semibold hover:bg-accent-dark transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+              View Live Demo
+            </a>
           </div>
         </div>
-
-        <!-- Links -->
-        <div class="flex flex-wrap gap-4">
-          <UiButton
-            v-if="project.githubUrl"
-            :href="project.githubUrl"
-            variant="primary"
-            size="md"
-          >
-            View on GitHub ↗
-          </UiButton>
-          <UiButton
-            v-if="project.demoUrl"
-            :href="project.demoUrl"
-            variant="outline"
-            size="md"
-          >
-            View Demo ↗
-          </UiButton>
-        </div>
-      </header>
-
-      <!-- Description -->
-      <div 
-        v-if="project.description" 
-        class="prose prose-lg mb-12 md:mb-16 max-w-none"
-      >
-        <p class="text-xl md:text-2xl text-primary/80 leading-relaxed">
-          {{ project.description }}
-        </p>
       </div>
+    </section>
 
+    <!-- Main Content -->
+    <div class="container-content py-16 space-y-16">
       <!-- Tech Stack -->
-      <div 
-        v-if="project.techStack && project.techStack.length > 0" 
-        class="mb-12 md:mb-16"
+      <section 
+        v-if="project.techStack && project.techStack.length > 0"
+        class="space-y-6"
       >
-        <h2 class="text-section-mobile md:text-section text-primary font-title font-bold mb-6">
-          Tech Stack
+        <h2 class="text-3xl md:text-4xl font-bold text-primary">
+          Technologies Used
         </h2>
         <div class="flex flex-wrap gap-3">
-          <UiTechBadge
+          <span
             v-for="tech in project.techStack"
             :key="tech"
-            :label="tech"
-            variant="accent"
-          />
+            class="px-5 py-2.5 bg-neutral-light text-primary rounded-lg text-sm font-medium border border-neutral-gray hover:bg-neutral-gray transition-colors duration-200"
+          >
+            {{ tech }}
+          </span>
         </div>
-      </div>
+      </section>
 
       <!-- Page Builder Content -->
-      <div 
-        v-if="project.pageBuilder && project.pageBuilder.length > 0" 
-        class="mb-12 md:mb-16"
+      <section 
+        v-if="project.pageBuilder && project.pageBuilder.length > 0"
       >
-        <AppPageBuilder :blocks="project.pageBuilder" :url-for="urlFor" />
-      </div>
+        <PageBuilder :blocks="project.pageBuilder" />
+      </section>
 
-      <!-- Legacy Content (fallback if pageBuilder is not used) -->
-      <div 
-        v-else-if="project.content && project.content.length > 0" 
-        class="prose prose-lg max-w-none mb-12 md:mb-16"
+      <!-- Legacy Content (fallback) -->
+      <section 
+        v-else-if="project.content && project.content.length > 0"
+        class="space-y-6"
       >
-        <UiSanityContent :blocks="project.content" :url-for="urlFor" />
-      </div>
-
-      <!-- Additional Images -->
-      <div 
-        v-if="project.images && project.images.length > 0" 
-        class="grid gap-6 md:gap-8 md:grid-cols-2 mb-12 md:mb-16"
-      >
-        <div
-          v-for="(image, index) in project.images"
-          :key="index"
-          class="rounded-card overflow-hidden shadow-card group"
-        >
-          <img
-            :src="urlFor(image).width(800).height(600).url()"
-            :alt="`${project.title} - Image ${index + 1}`"
-            class="w-full h-auto transition-transform duration-300 group-hover:scale-[1.02]"
-          >
+        <div class="sanity-content">
+          <SanityContent :value="project.content as any" />
         </div>
-      </div>
+      </section>
+
+      <!-- Additional Images Gallery -->
+      <section 
+        v-if="project.images && project.images.length > 0"
+        class="space-y-6"
+      >
+        <h2 class="text-3xl md:text-4xl font-bold text-primary">
+          Project Gallery
+        </h2>
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div
+            v-for="(imageItem, index) in project.images"
+            :key="index"
+            class="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
+          >
+            <NuxtImg
+              v-if="imageItem.image"
+              :src="urlFor(imageItem.image).width(800).height(600).url()"
+              :alt="imageItem.altText || `${project.title} - Image ${index + 1}`"
+              class="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-110"
+              sizes="100vw md:400px"
+              width="500"
+              height="300"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div class="absolute bottom-4 left-4 right-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <p class="text-sm font-semibold">{{ imageItem.altText || `Image ${index + 1}` }}</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <!-- Tags -->
-      <div 
-        v-if="project.tags && project.tags.length > 0" 
-        class="flex flex-wrap gap-3 pt-8 border-t border-neutral-gray"
+      <section 
+        v-if="project.tags && project.tags.length > 0"
+        class="pt-8 border-t border-neutral-gray"
       >
-        <span
-          v-for="tag in project.tags"
-          :key="tag"
-          class="px-4 py-2 bg-neutral-light text-primary rounded-full text-ui-small"
-        >
-          #{{ tag }}
-        </span>
-      </div>
+        <div class="flex flex-wrap gap-2">
+          <span
+            v-for="tag in project.tags"
+            :key="tag"
+            class="px-3 py-1.5 bg-neutral-light text-primary rounded-full text-sm font-medium"
+          >
+            #{{ tag }}
+          </span>
+        </div>
+      </section>
     </div>
   </main>
 
   <!-- 404 if project not found -->
-  <div v-else class="container-custom min-h-screen flex items-center justify-center">
+  <div v-else class="container-content min-h-screen flex items-center justify-center">
     <div class="text-center space-y-6">
-      <h1 class="text-section-mobile md:text-section text-primary font-title font-bold">
+      <h1 class="text-4xl md:text-5xl font-bold text-primary">
         Project not found
       </h1>
+      <p class="text-xl text-primary/60">
+        The project you're looking for doesn't exist.
+      </p>
       <nuxt-link 
-        to="/" 
-        class="inline-block text-accent hover:text-accent-dark transition-all duration-200 ease-out"
+        to="/projects" 
+        class="inline-flex items-center gap-2 px-6 py-3 bg-accent text-neutral rounded-lg font-semibold hover:bg-accent-dark transition-all duration-200"
       >
-        ← Back to home
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        Back to projects
       </nuxt-link>
     </div>
   </div>
@@ -170,13 +220,8 @@
 <script setup lang="ts">
 import type { SanityDocument } from '@sanity/client'
 import { createClient } from '@sanity/client'
-import imageUrlBuilder from '@sanity/image-url'
-import type { SanityImageSource } from '@sanity/image-url/lib/types/types'
 import groq from 'groq'
-import UiSanityContent from '~/components/ui/SanityContent.vue'
-import UiButton from '~/components/ui/Button.vue'
-import UiTechBadge from '~/components/ui/TechBadge.vue'
-import AppPageBuilder from '~/components/PageBuilder.vue'
+import PageBuilder from '~/components/PageBuilder.vue'
 
 const PROJECT_QUERY = groq`*[_type == "project" && slug.current == $slug][0] {
   _id,
@@ -184,7 +229,10 @@ const PROJECT_QUERY = groq`*[_type == "project" && slug.current == $slug][0] {
   slug,
   description,
   featuredImage,
-  images,
+  images[] {
+    image,
+    altText
+  },
   techStack,
   githubUrl,
   demoUrl,
@@ -222,8 +270,7 @@ useHead({
   ],
 })
 
-const urlFor = (source: SanityImageSource) =>
-  imageUrlBuilder({ projectId: client.config().projectId!, dataset: client.config().dataset! }).image(source)
+const urlFor = useImageUrl()
 
 const formatStatus = (status: string): string => {
   return status
@@ -235,15 +282,15 @@ const formatStatus = (status: string): string => {
 const getStatusClass = (status: string): string => {
   switch (status) {
     case 'completed':
-      return 'bg-green-100 text-green-800'
+      return 'bg-green-100 text-green-800 border border-green-200'
     case 'in-progress':
-      return 'bg-accent/10 text-accent'
+      return 'bg-blue-100 text-blue-800 border border-blue-200'
     case 'school-project':
-      return 'bg-purple-100 text-purple-800'
+      return 'bg-purple-100 text-purple-800 border border-purple-200'
     case 'archived':
-      return 'bg-neutral-gray text-primary/70'
+      return 'bg-neutral-light text-primary border border-neutral-gray'
     default:
-      return 'bg-neutral-gray text-primary/70'
+      return 'bg-neutral-light text-primary border border-neutral-gray'
   }
 }
 
@@ -253,70 +300,3 @@ const formatDate = (dateString: string): string => {
 }
 </script>
 
-<style scoped>
-.prose {
-  @apply text-body-mobile md:text-body leading-relaxed text-primary/90;
-}
-
-.prose :deep(h1), 
-.prose :deep(h2), 
-.prose :deep(h3), 
-.prose :deep(h4), 
-.prose :deep(h5), 
-.prose :deep(h6) {
-  @apply text-primary font-title font-bold mb-4 mt-8;
-}
-
-.prose :deep(h1) {
-  @apply text-3xl md:text-4xl;
-}
-
-.prose :deep(h2) {
-  @apply text-2xl md:text-3xl;
-}
-
-.prose :deep(h3) {
-  @apply text-xl md:text-2xl;
-}
-
-.prose :deep(p) {
-  @apply mb-6;
-}
-
-.prose :deep(ul), 
-.prose :deep(ol) {
-  @apply mb-6 pl-6 space-y-2;
-}
-
-.prose :deep(li) {
-  @apply mb-2;
-}
-
-.prose :deep(a) {
-  @apply text-accent hover:text-accent-dark underline transition-all duration-200 ease-out;
-}
-
-.prose :deep(strong) {
-  @apply font-semibold;
-}
-
-.prose :deep(em) {
-  @apply italic;
-}
-
-.prose :deep(blockquote) {
-  @apply border-l-4 border-accent pl-6 italic my-6 text-primary/80;
-}
-
-.prose :deep(code) {
-  @apply bg-neutral-light px-2 py-1 rounded text-sm font-mono;
-}
-
-.prose :deep(pre) {
-  @apply bg-primary text-neutral p-4 rounded-card overflow-x-auto my-6;
-}
-
-.prose :deep(pre code) {
-  @apply bg-transparent p-0;
-}
-</style>
