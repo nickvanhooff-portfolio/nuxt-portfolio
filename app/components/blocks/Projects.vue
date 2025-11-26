@@ -1,5 +1,4 @@
 <template>
-  {{ projects }}
   <section class="section-spacing bg-neutral relative overflow-hidden">
     <!-- Subtle background gradient -->
     <div class="absolute inset-0 opacity-20">
