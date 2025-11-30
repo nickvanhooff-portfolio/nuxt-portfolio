@@ -84,6 +84,42 @@ export interface TechStack extends SanityBlock {
   backgroundColor?: 'white' | 'gray' | 'primary'
 }
 
+// ImageText type
+export interface ImageText extends SanityBlock {
+  _type: 'imageText'
+  image: SanityImageAsset
+  altText: string
+  content?: Array<Record<string, unknown>>
+  layout?: 'image-left' | 'image-right' | 'image-top'
+  backgroundColor?: 'white' | 'gray' | 'primary'
+}
+
+// Contact type
+export interface ContactSocialLink {
+  platform: 'linkedin' | 'github' | 'twitter' | 'instagram' | 'facebook' | 'website' | 'other'
+  url: string
+  label?: string
+}
+
+export interface ContactInfo {
+  email?: string
+  phone?: string
+  location?: string
+  socialLinks?: ContactSocialLink[]
+}
+
+export interface Contact extends SanityBlock {
+  _type: 'contact'
+  heading?: string
+  description?: string
+  showContactForm?: boolean
+  showContactInfo?: boolean
+  contactInfo?: ContactInfo
+  layout?: 'form-left' | 'form-right' | 'form-only' | 'info-only'
+  formAction?: string
+  backgroundColor?: 'white' | 'gray' | 'primary'
+}
+
 // URL builder function type
 export type UrlBuilder = (source: SanityImageSource) => {
   width: (width: number) => {
