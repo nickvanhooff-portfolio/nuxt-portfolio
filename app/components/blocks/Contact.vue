@@ -336,7 +336,7 @@ const handleSubmit = async (event: Event) => {
   
   try {
     if (props.block.formAction) {
-      // If form action is provided, submit to that URL
+      // If form action is provided, submit to external URL (Formspree, Netlify Forms, etc.)
       const form = event.target as HTMLFormElement
       const formDataObj = new FormData(form)
       
@@ -353,13 +353,26 @@ const handleSubmit = async (event: Event) => {
         throw new Error('Form submission failed')
       }
     } else {
-      // Fallback: just show success message (you can integrate with your own backend)
-      submitMessage.value = 'Bedankt! Je bericht is verzonden. (Let op: configureer een form action URL in Sanity)'
-      submitMessageType.value = 'success'
-      formData.value = { name: '', email: '', message: '' }
+      // Submit to Sanity via our API route
+      const response = await $fetch('/api/contact/submit', {
+        method: 'POST',
+        body: {
+          name: formData.value.name,
+          email: formData.value.email,
+          message: formData.value.message,
+        },
+      })
+      
+      if (response.success) {
+        submitMessage.value = 'Bedankt! Je bericht is verzonden en opgeslagen.'
+        submitMessageType.value = 'success'
+        formData.value = { name: '', email: '', message: '' }
+      } else {
+        throw new Error('Form submission failed')
+      }
     }
-  } catch (error) {
-    submitMessage.value = 'Er ging iets mis. Probeer het later opnieuw.'
+  } catch (error: any) {
+    submitMessage.value = error.data?.message || 'Er ging iets mis. Probeer het later opnieuw.'
     submitMessageType.value = 'error'
   } finally {
     isSubmitting.value = false

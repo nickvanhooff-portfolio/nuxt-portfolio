@@ -19,6 +19,7 @@
     "@types/three": "^0.181.0",
     "groq": "^4.8.1",
     "nuxt": "^4.1.1",
+    "resend": "^6.5.2",
     "three": "^0.181.2"
   },
   "devDependencies": {
