@@ -1,7 +1,9 @@
 <template>
   <section 
+    :id="$attrs.id as string || 'about'"
     class="section-spacing"
     :class="backgroundColorClass"
+    :style="{ scrollMarginTop: '80px' }"
   >
     <div class="container-custom">
       <div class="max-w-6xl mx-auto space-y-8 md:space-y-12">

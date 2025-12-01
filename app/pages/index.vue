@@ -1,74 +1,77 @@
 <template>
-  <main class="min-h-screen bg-neutral">
-    <div class="container-custom section-spacing">
-      <div class="max-w-6xl mx-auto space-y-12 md:space-y-16">
-        <h1 class="text-section-mobile md:text-section text-primary font-title font-bold text-center">
-          Pages
-        </h1>
-        
-        <!-- Loading state -->
-        <div v-if="pending" class="text-center py-16">
-          <p class="text-primary/60">Loading pages...</p>
-        </div>
-        
-        <!-- Pages grid -->
-        <div 
-          v-else-if="pages && pages.length > 0" 
-          class="grid gap-6 md:gap-8 md:grid-cols-2 lg:grid-cols-3"
-        >
-        <article 
-          v-for="page in pages" 
-          :key="page._id" 
-          class="bg-neutral border border-neutral-gray rounded-card p-6 md:p-8 hover:shadow-card-hover transition-all duration-300 hover:scale-[1.02]"
-        >
-          <nuxt-link :to="`/${page.slug.current}`" class="block space-y-4">
-            <h2 class="text-xl md:text-2xl font-title font-bold text-primary">
-              {{ page.title }}
-            </h2>
-            <p 
-              v-if="page.metaDescription" 
-              class="text-primary/70 text-body-mobile line-clamp-3"
-            >
-              {{ page.metaDescription }}
-            </p>
-            <div 
-              v-if="page.pageBuilder && page.pageBuilder.length > 0" 
-              class="text-ui-small text-primary/50"
-            >
-              {{ page.pageBuilder.length }} block{{ page.pageBuilder.length !== 1 ? 's' : '' }}
-            </div>
-          </nuxt-link>
-        </article>
-      </div>
-      
-        <!-- Error state -->
-        <div v-else-if="error" class="text-center py-16">
-          <p class="text-red-500 mb-4">Error loading pages:</p>
-          <p class="text-ui-small text-primary/60">{{ error?.message }}</p>
-        </div>
-        
-        <!-- No pages found -->
-        <div v-else class="text-center py-16">
-          <p class="text-primary/60 mb-4">No pages found.</p>
-          <p class="text-ui-small text-primary/40">Create a page in Sanity Studio first.</p>
-        </div>
-      </div>
+  <main v-if="page" class="min-h-screen bg-neutral">
+    <!-- Page Builder Blocks -->
+    <PageBuilder
+      v-if="page.pageBuilder && page.pageBuilder.length > 0"
+      :blocks="page.pageBuilder"
+    />
+    
+    <!-- Fallback if no blocks -->
+    <div v-else class="container-custom section-spacing">
+      <h1 class="text-section-mobile md:text-section text-primary font-title font-bold mb-6">
+        {{ page.title }}
+      </h1>
+      <p 
+        v-if="page.metaDescription" 
+        class="text-body text-primary/70 mb-8"
+      >
+        {{ page.metaDescription }}
+      </p>
+      <p class="text-primary/60">No content blocks added yet.</p>
     </div>
   </main>
+  
+  <!-- Loading state -->
+  <div v-else-if="pending" class="container-custom min-h-screen flex items-center justify-center">
+    <p class="text-primary/60">Loading...</p>
+  </div>
+  
+  <!-- Error state -->
+  <div v-else-if="error" class="container-custom min-h-screen flex items-center justify-center">
+    <div class="text-center space-y-4">
+      <p class="text-red-500 mb-4">Error loading page:</p>
+      <p class="text-ui-small text-primary/60">{{ error?.message }}</p>
+    </div>
+  </div>
+  
+  <!-- No home page found -->
+  <div v-else class="container-custom min-h-screen flex items-center justify-center">
+    <div class="text-center space-y-6">
+      <h1 class="text-section-mobile md:text-section text-primary font-title font-bold">
+        Home page not found
+      </h1>
+      <p class="text-primary/60">
+        Please create a page with slug "home" in Sanity Studio.
+      </p>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
 import type { SanityDocument } from '@sanity/client'
 import { createClient } from '@sanity/client'
 import groq from 'groq'
+import PageBuilder from '~/components/PageBuilder.vue'
 
-// Query for pages with page builder
-const PAGES_QUERY = groq`*[_type == "page"]{ 
-  _id, 
-  title, 
-  slug, 
+// Query for home page (slug: "home")
+const HOME_PAGE_QUERY = groq`*[_type == "page" && slug.current == "home"][0] {
+  _id,
+  title,
+  slug,
   metaDescription,
-  pageBuilder
+  pageBuilder[] {
+    ...,
+    _type == "techStack" => {
+      ...,
+      techItems[]-> {
+        _id,
+        name,
+        icon,
+        category,
+        url
+      }
+    }
+  }
 }`
 
 const runtime = useRuntimeConfig()
@@ -79,19 +82,19 @@ const client = createClient({
   useCdn: true
 })
 
-const { data: pages, pending, error } = await useAsyncData<SanityDocument[]>(
-  'pages',
-  async () => {
-    try {
-      console.log('Fetching pages with query:', PAGES_QUERY)
-      console.log('Client config:', client.config())
-      const result = await client.fetch(PAGES_QUERY)
-      console.log('Pages result:', result)
-      return result
-    } catch (err) {
-      console.error('Error fetching pages:', err)
-      throw err
-    }
-  }
+const { data: page, pending, error } = await useAsyncData<SanityDocument>(
+  'home-page',
+  () => client.fetch(HOME_PAGE_QUERY)
 )
+
+// SEO metadata
+useHead({
+  title: page.value ? `${page.value.title} - Portfolio` : 'Portfolio',
+  meta: [
+    {
+      name: 'description',
+      content: page.value?.metaDescription || '',
+    },
+  ],
+})
 </script>

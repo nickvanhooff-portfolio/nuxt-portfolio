@@ -65,21 +65,21 @@ export interface Projects extends SanityBlock {
 }
 
 // Tech Stack type
-export interface TechStackItem {
+export interface TechItem {
+  _id: string
+  _type: 'techItem'
   name: string
   icon?: SanityImageAsset
-}
-
-export interface TechStackCategory {
-  categoryName: string
-  items: TechStackItem[]
+  category: 'languages' | 'frameworks' | 'tools'
+  url?: string
 }
 
 export interface TechStack extends SanityBlock {
   _type: 'techStack'
   heading?: string
   description?: string
-  categories: TechStackCategory[]
+  techItems?: TechItem[]
+  showAllCategories?: boolean
   layout?: 'grid' | 'list'
   backgroundColor?: 'white' | 'gray' | 'primary'
 }

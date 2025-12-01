@@ -1,5 +1,9 @@
 <template>
-  <section class="section-spacing bg-yellow-50 border-l-4 border-yellow-400">
+  <section 
+    :id="$attrs.id as string || 'unknown-block'"
+    class="section-spacing bg-yellow-50 border-l-4 border-yellow-400"
+    :style="{ scrollMarginTop: '80px' }"
+  >
     <div class="container-custom">
       <div class="max-w-6xl mx-auto">
         <div class="bg-yellow-100 border border-yellow-400 rounded-card p-6">

@@ -42,7 +42,25 @@ import type { SanityDocument } from '@sanity/client'
 import { createClient } from '@sanity/client'
 import groq from 'groq'
 
-const PAGE_QUERY = groq`*[_type == "page" && slug.current == $slug][0]`
+const PAGE_QUERY = groq`*[_type == "page" && slug.current == $slug][0] {
+  _id,
+  title,
+  slug,
+  metaDescription,
+  pageBuilder[] {
+    ...,
+    _type == "techStack" => {
+      ...,
+      techItems[]-> {
+        _id,
+        name,
+        icon,
+        category,
+        url
+      }
+    }
+  }
+}`
 const { params } = useRoute()
 
 const runtime = useRuntimeConfig()

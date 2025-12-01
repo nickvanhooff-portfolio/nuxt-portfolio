@@ -1,5 +1,9 @@
 <template>
-  <section class="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#0a0a0f] via-[#111827] to-[#0f172a]">
+  <section 
+    :id="$attrs.id as string || 'home'"
+    class="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#0a0a0f] via-[#111827] to-[#0f172a]"
+    :style="{ scrollMarginTop: '80px' }"
+  >
     <!-- Static gradient background -->
     <div class="absolute w-[500px] h-[500px] rounded-full blur-[80px] opacity-30 bg-[radial-gradient(circle,#6366f1_0%,transparent_70%)] -top-[200px] -left-[200px]" />
     <div class="absolute w-[400px] h-[400px] rounded-full blur-[80px] opacity-30 bg-[radial-gradient(circle,#8b5cf6_0%,transparent_70%)] -bottom-[150px] -right-[150px]" />

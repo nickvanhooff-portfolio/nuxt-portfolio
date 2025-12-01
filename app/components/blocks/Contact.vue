@@ -1,21 +1,35 @@
 <template>
   <section 
-    class="section-spacing"
+    :id="$attrs.id as string || 'contact'"
+    class="section-spacing relative overflow-hidden"
     :class="backgroundColorClass"
+    :style="{ scrollMarginTop: '80px' }"
   >
-    <div class="container-custom">
-      <div class="max-w-6xl mx-auto space-y-8 md:space-y-12">
-        <!-- Heading -->
-        <div class="text-center space-y-4">
+    <!-- Background gradient -->
+    <div class="absolute inset-0 opacity-30">
+      <div class="absolute inset-0 bg-gradient-to-br from-accent/20 via-primary/10 to-accent/20" />
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(0,102,255,0.1),transparent_50%)]" />
+    </div>
+
+    <div class="container-custom relative z-10">
+      <div class="max-w-6xl mx-auto space-y-12 md:space-y-16">
+        <!-- Heading with animation -->
+        <div 
+          v-if="block.heading || block.description"
+          class="text-center space-y-6 animate-fade-in-up"
+        >
           <h2 
             v-if="block.heading" 
-            class="text-section-mobile md:text-section text-primary font-title font-bold"
+            class="text-section-mobile md:text-section text-primary font-title font-bold relative inline-block"
           >
-            {{ block.heading }}
+            <span class="relative z-10">{{ block.heading }}</span>
+            <span 
+              class="absolute inset-0 bg-gradient-to-r from-accent/20 via-accent/40 to-accent/20 blur-2xl opacity-50 -z-10"
+            />
           </h2>
           <p 
             v-if="block.description" 
-            class="text-body text-primary/70 max-w-2xl mx-auto"
+            class="text-body-mobile md:text-body text-primary/70 max-w-2xl mx-auto leading-relaxed"
           >
             {{ block.description }}
           </p>
@@ -26,180 +40,197 @@
           class="grid gap-8 md:gap-12"
           :class="layoutClass"
         >
-          <!-- Contact Form -->
+          <!-- Contact Form Card -->
           <div 
             v-if="showForm"
-            class="space-y-6"
+            class="relative p-6 md:p-8 rounded-2xl backdrop-blur-sm bg-gradient-to-br from-white/10 to-white/5 border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.1)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(0,102,255,0.15),inset_0_1px_0_rgba(255,255,255,0.2)] hover:border-accent/30 group animate-fade-in-up"
+            :style="{ animationDelay: '0.1s' }"
           >
-            <h3 class="text-2xl md:text-3xl font-bold text-primary mb-6">
-              Stuur een bericht
-            </h3>
-            <form
-              :action="block.formAction || '#'"
-              method="POST"
-              class="space-y-6"
-              @submit.prevent="handleSubmit"
-            >
-              <div>
-                <label 
-                  for="name"
-                  class="block text-sm font-medium text-primary mb-2"
-                >
-                  Naam *
-                </label>
-                <input
-                  id="name"
-                  v-model="formData.name"
-                  type="text"
-                  name="name"
-                  required
-                  class="w-full px-4 py-3 rounded-lg border border-neutral-gray bg-neutral text-primary placeholder-primary/50 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
-                  placeholder="Je naam"
+            <div class="relative z-10">
+              <h3 class="text-xl md:text-2xl font-title font-semibold text-primary mb-6 relative">
+                <span class="relative z-10">Stuur een bericht</span>
+                <span 
+                  class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-accent to-accent/50 group-hover:w-full transition-all duration-500 ease-out"
                 />
-              </div>
-              
-              <div>
-                <label 
-                  for="email"
-                  class="block text-sm font-medium text-primary mb-2"
-                >
-                  Email *
-                </label>
-                <input
-                  id="email"
-                  v-model="formData.email"
-                  type="email"
-                  name="email"
-                  required
-                  class="w-full px-4 py-3 rounded-lg border border-neutral-gray bg-neutral text-primary placeholder-primary/50 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
-                  placeholder="je@email.com"
-                />
-              </div>
-              
-              <div>
-                <label 
-                  for="message"
-                  class="block text-sm font-medium text-primary mb-2"
-                >
-                  Bericht *
-                </label>
-                <textarea
-                  id="message"
-                  v-model="formData.message"
-                  name="message"
-                  required
-                  rows="6"
-                  class="w-full px-4 py-3 rounded-lg border border-neutral-gray bg-neutral text-primary placeholder-primary/50 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all resize-y"
-                  placeholder="Je bericht..."
-                />
-              </div>
-              
-              <button
-                type="submit"
-                :disabled="isSubmitting"
-                class="w-full md:w-auto px-8 py-3 bg-accent text-neutral rounded-lg font-semibold hover:bg-accent-dark transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              </h3>
+              <form
+                :action="block.formAction || '#'"
+                method="POST"
+                class="space-y-5"
+                @submit.prevent="handleSubmit"
               >
-                <span v-if="!isSubmitting">Verstuur</span>
-                <span v-else>Verzenden...</span>
-              </button>
-              
-              <p 
-                v-if="submitMessage"
-                :class="submitMessageType === 'success' ? 'text-green-600' : 'text-red-600'"
-                class="text-sm mt-4"
-              >
-                {{ submitMessage }}
-              </p>
-            </form>
+                <div class="space-y-2">
+                  <label 
+                    for="name"
+                    class="block text-sm font-medium text-primary/80"
+                  >
+                    Naam *
+                  </label>
+                  <input
+                    id="name"
+                    v-model="formData.name"
+                    type="text"
+                    name="name"
+                    required
+                    class="w-full px-4 py-3 rounded-xl border border-black/10 bg-white/5 text-primary placeholder-primary/40 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent/50 focus:bg-white/8 focus:shadow-[0_0_0_3px_rgba(0,102,255,0.1)]"
+                    placeholder="Je naam"
+                  />
+                </div>
+                
+                <div class="space-y-2">
+                  <label 
+                    for="email"
+                    class="block text-sm font-medium text-primary/80"
+                  >
+                    Email *
+                  </label>
+                  <input
+                    id="email"
+                    v-model="formData.email"
+                    type="email"
+                    name="email"
+                    required
+                    class="w-full px-4 py-3 rounded-xl border border-black/10 bg-white/5 text-primary placeholder-primary/40 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent/50 focus:bg-white/8 focus:shadow-[0_0_0_3px_rgba(0,102,255,0.1)]"
+                    placeholder="je@email.com"
+                  />
+                </div>
+                
+                <div class="space-y-2">
+                  <label 
+                    for="message"
+                    class="block text-sm font-medium text-primary/80"
+                  >
+                    Bericht *
+                  </label>
+                  <textarea
+                    id="message"
+                    v-model="formData.message"
+                    name="message"
+                    required
+                    rows="6"
+                    class="w-full px-4 py-3 rounded-xl border border-black/10 bg-white/5 text-primary placeholder-primary/40 transition-all duration-200 resize-y focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent/50 focus:bg-white/8 focus:shadow-[0_0_0_3px_rgba(0,102,255,0.1)]"
+                    placeholder="Je bericht..."
+                  />
+                </div>
+                
+                <button
+                  type="submit"
+                  :disabled="isSubmitting"
+                  class="relative px-8 py-3 rounded-xl font-semibold text-neutral transition-all duration-300 overflow-hidden bg-gradient-to-r from-accent to-accent-dark shadow-[0_4px_16px_rgba(0,102,255,0.3),0_2px_4px_rgba(0,102,255,0.2)] hover:shadow-[0_8px_24px_rgba(0,102,255,0.4),0_4px_8px_rgba(0,102,255,0.3)] hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+                >
+                  <span v-if="!isSubmitting">Verstuur</span>
+                  <span v-else>Verzenden...</span>
+                </button>
+                
+                <div 
+                  v-if="submitMessage"
+                  class="px-4 py-3 rounded-xl text-sm font-medium"
+                  :class="submitMessageType === 'success' ? 'bg-green-500/10 text-green-600 border border-green-500/20' : 'bg-red-500/10 text-red-600 border border-red-500/20'"
+                >
+                  {{ submitMessage }}
+                </div>
+              </form>
+            </div>
           </div>
           
-          <!-- Contact Info -->
+          <!-- Contact Info Card -->
           <div 
             v-if="showInfo"
-            class="space-y-6"
+            class="relative p-6 md:p-8 rounded-2xl backdrop-blur-sm bg-gradient-to-br from-white/10 to-white/5 border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.1)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(0,102,255,0.15),inset_0_1px_0_rgba(255,255,255,0.2)] hover:border-accent/30 group animate-fade-in-up"
+            :style="{ animationDelay: '0.2s' }"
           >
-            <h3 class="text-2xl md:text-3xl font-bold text-primary mb-6">
-              Contactinformatie
-            </h3>
-            
-            <div class="space-y-6">
-              <!-- Email -->
-              <div 
-                v-if="block.contactInfo?.email"
-                class="flex items-start gap-4"
-              >
-                <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center">
-                  <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                </div>
-                <div>
-                  <p class="text-sm text-primary/60 mb-1">Email</p>
-                  <a 
-                    :href="`mailto:${block.contactInfo.email}`"
-                    class="text-primary hover:text-accent transition-colors"
-                  >
-                    {{ block.contactInfo.email }}
-                  </a>
-                </div>
-              </div>
+            <div class="relative z-10">
+              <h3 class="text-xl md:text-2xl font-title font-semibold text-primary mb-6 relative">
+                <span class="relative z-10">Contactinformatie</span>
+                <span 
+                  class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-accent to-accent/50 group-hover:w-full transition-all duration-500 ease-out"
+                />
+              </h3>
               
-              <!-- Phone -->
-              <div 
-                v-if="block.contactInfo?.phone"
-                class="flex items-start gap-4"
-              >
-                <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center">
-                  <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                  </svg>
+              <div class="space-y-5">
+                <!-- Email -->
+                <div 
+                  v-if="block.contactInfo?.email"
+                  class="flex items-start gap-4 p-4 rounded-xl transition-all duration-200 bg-white/3 border border-black/5 hover:bg-white/6 hover:border-accent/20 hover:translate-x-1 group/item"
+                >
+                  <div class="flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-200 bg-gradient-to-br from-accent/15 to-accent/10 border border-accent/20 group-hover/item:scale-105 group-hover/item:shadow-[0_4px_12px_rgba(0,102,255,0.2)]">
+                    <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <div class="flex-1">
+                    <p class="text-xs font-medium text-primary/60 mb-1 uppercase tracking-wide">Email</p>
+                    <a 
+                      :href="`mailto:${block.contactInfo.email}`"
+                      class="text-base font-medium text-primary hover:text-accent transition-colors duration-200 inline-flex items-center gap-2 group-hover/item:translate-x-1"
+                    >
+                      {{ block.contactInfo.email }}
+                      <svg class="w-4 h-4 opacity-0 group-hover/item:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </a>
+                  </div>
                 </div>
-                <div>
-                  <p class="text-sm text-primary/60 mb-1">Telefoon</p>
-                  <a 
-                    :href="`tel:${block.contactInfo.phone}`"
-                    class="text-primary hover:text-accent transition-colors"
-                  >
-                    {{ block.contactInfo.phone }}
-                  </a>
+                
+                <!-- Phone -->
+                <div 
+                  v-if="block.contactInfo?.phone"
+                  class="flex items-start gap-4 p-4 rounded-xl transition-all duration-200 bg-white/3 border border-black/5 hover:bg-white/6 hover:border-accent/20 hover:translate-x-1 group/item"
+                >
+                  <div class="flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-200 bg-gradient-to-br from-accent/15 to-accent/10 border border-accent/20 group-hover/item:scale-105 group-hover/item:shadow-[0_4px_12px_rgba(0,102,255,0.2)]">
+                    <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                    </svg>
+                  </div>
+                  <div class="flex-1">
+                    <p class="text-xs font-medium text-primary/60 mb-1 uppercase tracking-wide">Telefoon</p>
+                    <a 
+                      :href="`tel:${block.contactInfo.phone}`"
+                      class="text-base font-medium text-primary hover:text-accent transition-colors duration-200 inline-flex items-center gap-2 group-hover/item:translate-x-1"
+                    >
+                      {{ block.contactInfo.phone }}
+                      <svg class="w-4 h-4 opacity-0 group-hover/item:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </a>
+                  </div>
                 </div>
-              </div>
-              
-              <!-- Location -->
-              <div 
-                v-if="block.contactInfo?.location"
-                class="flex items-start gap-4"
-              >
-                <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center">
-                  <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
+                
+                <!-- Location -->
+                <div 
+                  v-if="block.contactInfo?.location"
+                  class="flex items-start gap-4 p-4 rounded-xl transition-all duration-200 bg-white/3 border border-black/5 hover:bg-white/6 hover:border-accent/20 hover:translate-x-1 group/item"
+                >
+                  <div class="flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-200 bg-gradient-to-br from-accent/15 to-accent/10 border border-accent/20 group-hover/item:scale-105 group-hover/item:shadow-[0_4px_12px_rgba(0,102,255,0.2)]">
+                    <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </div>
+                  <div class="flex-1">
+                    <p class="text-xs font-medium text-primary/60 mb-1 uppercase tracking-wide">Locatie</p>
+                    <p class="text-base font-medium text-primary">
+                      {{ block.contactInfo.location }}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p class="text-sm text-primary/60 mb-1">Locatie</p>
-                  <p class="text-primary">
-                    {{ block.contactInfo.location }}
-                  </p>
-                </div>
-              </div>
-              
-              <!-- Social Links -->
-              <div 
-                v-if="block.contactInfo?.socialLinks && block.contactInfo.socialLinks.length > 0"
-                class="pt-4"
-              >
-                <p class="text-sm text-primary/60 mb-4">Volg mij</p>
-                <div class="flex flex-wrap gap-3">
-                  <a
-                    v-for="(link, index) in block.contactInfo.socialLinks"
-                    :key="index"
-                    :href="link.url"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="flex items-center gap-2 px-4 py-2 rounded-lg bg-neutral-light hover:bg-accent/10 text-primary hover:text-accent transition-all duration-200"
-                    :title="getSocialLabel(link)"
-                  >
+                
+                <!-- Social Links -->
+                <div 
+                  v-if="block.contactInfo?.socialLinks && block.contactInfo.socialLinks.length > 0"
+                  class="pt-6 border-t border-primary/10"
+                >
+                  <p class="text-xs font-medium text-primary/60 mb-4 uppercase tracking-wide">Volg mij</p>
+                  <div class="flex flex-wrap gap-3">
+                    <a
+                      v-for="(link, index) in block.contactInfo.socialLinks"
+                      :key="index"
+                      :href="link.url"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="relative flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-all duration-200 overflow-hidden bg-white/5 border border-black/10 text-primary hover:text-accent hover:border-accent/30 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(0,102,255,0.15)] group/link"
+                      :title="getSocialLabel(link)"
+                    >
                     <!-- LinkedIn Icon -->
                     <svg 
                       v-if="link.platform === 'linkedin'"
@@ -255,8 +286,9 @@
                     >
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
                     </svg>
-                    <span class="text-sm font-medium">{{ getSocialLabel(link) }}</span>
-                  </a>
+                      <span class="text-sm font-medium relative z-10">{{ getSocialLabel(link) }}</span>
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
@@ -394,4 +426,24 @@ const getSocialLabel = (link: { platform: string; label?: string }) => {
   return labels[link.platform] || link.platform
 }
 </script>
+
+<style scoped>
+/* Fade in up animation */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+</style>
 

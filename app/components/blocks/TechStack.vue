@@ -1,7 +1,9 @@
 <template>
   <section 
+    :id="$attrs.id as string || 'tech-stack'"
     class="section-spacing relative overflow-hidden"
     :class="backgroundColorClass"
+    :style="{ scrollMarginTop: '80px' }"
   >
     <!-- Animated background gradient -->
     <div class="absolute inset-0 opacity-30">
@@ -37,12 +39,12 @@
         
         <!-- Tech Stack Categories with modern cards -->
         <div 
-          v-if="block.categories && block.categories.length > 0"
+          v-if="groupedCategories && groupedCategories.length > 0"
           :class="layoutClass"
         >
           <div
-            v-for="(category, categoryIndex) in block.categories"
-            :key="category.categoryName"
+            v-for="(category, categoryIndex) in groupedCategories"
+            :key="category.category"
             class="tech-category-card group"
             :style="{ animationDelay: `${categoryIndex * 0.1}s` }"
           >
@@ -62,10 +64,15 @@
             <div 
               :class="itemsContainerClass"
             >
-              <div
+              <component
                 v-for="(item, itemIndex) in category.items"
-                :key="`${category.categoryName}-${itemIndex}`"
+                :key="item._id"
+                :is="item.url ? 'a' : 'div'"
+                :href="item.url"
+                :target="item.url ? '_blank' : undefined"
+                :rel="item.url ? 'noopener noreferrer' : undefined"
                 class="tech-item-card"
+                :class="item.url ? 'cursor-pointer' : 'cursor-default'"
                 :style="{ animationDelay: `${(categoryIndex * 0.1) + (itemIndex * 0.05)}s` }"
                 @mouseenter="handleMouseEnter"
                 @mousemove="handleMouseMove($event, itemIndex)"
@@ -95,7 +102,7 @@
 
                 <!-- Shine effect on hover -->
                 <div class="tech-item-shine" />
-              </div>
+              </component>
             </div>
           </div>
         </div>
@@ -113,7 +120,7 @@
 </template>
 
 <script setup lang="ts">
-import type { TechStack } from '~/types/sanity'
+import type { TechStack, TechItem } from '~/types/sanity'
 
 interface Props {
   block: TechStack
@@ -123,7 +130,96 @@ const props = defineProps<Props>()
 
 const urlFor = useImageUrl()
 
+const categoryLabels: Record<string, string> = {
+  languages: 'Programmeertalen',
+  frameworks: 'Frameworks & Libraries',
+  tools: 'Tools, Platforms & Databases',
+}
+
 const layout = computed(() => props.block.layout || 'grid')
+
+// Fetch all tech items if showAllCategories is enabled
+const allTechItems = ref<TechItem[]>([])
+
+onMounted(async () => {
+  if (props.block.showAllCategories) {
+    try {
+      const runtime = useRuntimeConfig()
+      const { createClient } = await import('@sanity/client')
+      const groq = (await import('groq')).default
+      
+      const client = createClient({
+        projectId: String(runtime.public.NUXT_PUBLIC_SANITY_PROJECT_ID || ''),
+        dataset: String(runtime.public.NUXT_PUBLIC_SANITY_DATASET || 'production'),
+        apiVersion: '2025-07-16',
+        useCdn: true,
+      })
+      
+      const query = groq`*[_type == "techItem"] | order(name asc) {
+        _id,
+        name,
+        icon,
+        category,
+        url
+      }`
+      
+      const items = await client.fetch<TechItem[]>(query)
+      allTechItems.value = items
+    } catch (error) {
+      console.error('Failed to fetch all tech items:', error)
+    }
+  }
+})
+
+// Group tech items by category
+const groupedCategories = computed(() => {
+  // Use all items if showAllCategories is enabled, otherwise use selected items
+  const itemsToUse = props.block.showAllCategories 
+    ? allTechItems.value 
+    : (props.block.techItems || [])
+
+  if (itemsToUse.length === 0) {
+    // If showAllCategories is enabled, show empty categories
+    if (props.block.showAllCategories) {
+      return Object.entries(categoryLabels).map(([category, categoryName]) => ({
+        category,
+        categoryName,
+        items: [] as TechItem[],
+      }))
+    }
+    return []
+  }
+
+  // Filter out references that weren't expanded (shouldn't happen, but safety check)
+  const items = itemsToUse.filter((item): item is TechItem => 
+    typeof item === 'object' && '_id' in item && 'category' in item
+  ) as TechItem[]
+
+  // Group by category
+  const grouped = items.reduce((acc, item) => {
+    const category = item.category || 'tools'
+    if (!acc[category]) {
+      acc[category] = []
+    }
+    acc[category].push(item)
+    return acc
+  }, {} as Record<string, TechItem[]>)
+
+  // Convert to array with category names, including empty categories if showAllCategories is enabled
+  const allCategories = Object.keys(categoryLabels)
+  const result = allCategories.map((category) => ({
+    category,
+    categoryName: categoryLabels[category] || category,
+    items: (grouped[category] || []).sort((a, b) => a.name.localeCompare(b.name)),
+  }))
+
+  // Filter out empty categories if showAllCategories is disabled
+  if (!props.block.showAllCategories) {
+    return result.filter((cat) => cat.items.length > 0)
+  }
+
+  return result
+})
 
 const layoutClass = computed(() => {
   if (layout.value === 'list') {

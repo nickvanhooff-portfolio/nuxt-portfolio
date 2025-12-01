@@ -1,5 +1,9 @@
 <template>
-  <section class="section-spacing bg-neutral">
+  <section 
+    :id="$attrs.id as string || 'image'"
+    class="section-spacing bg-neutral"
+    :style="{ scrollMarginTop: '80px' }"
+  >
     <div class="container-custom">
       <div class="max-w-6xl mx-auto">
         <div 

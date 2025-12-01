@@ -65,8 +65,9 @@
             >
               <UiTechBadge
                 v-for="tech in project.techStack.slice(0, 4)"
-                :key="tech"
-                :label="tech"
+                :key="tech._id"
+                :label="tech.name"
+                :icon="tech.icon"
                 variant="default"
               />
               <span
@@ -124,7 +125,12 @@ const PROJECTS_QUERY = groq`*[_type == "project" && defined(slug.current)]|order
   slug,
   description,
   featuredImage,
-  techStack,
+  techStack[]-> {
+    _id,
+    name,
+    icon,
+    category
+  },
   githubUrl,
   demoUrl,
   status

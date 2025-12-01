@@ -119,13 +119,25 @@
           Technologies Used
         </h2>
         <div class="flex flex-wrap gap-3">
-          <span
+          <a
             v-for="tech in project.techStack"
-            :key="tech"
-            class="px-5 py-2.5 bg-neutral-light text-primary rounded-lg text-sm font-medium border border-neutral-gray hover:bg-neutral-gray transition-colors duration-200"
+            :key="tech._id"
+            :href="tech.url || '#'"
+            :target="tech.url ? '_blank' : undefined"
+            :rel="tech.url ? 'noopener noreferrer' : undefined"
+            class="inline-flex items-center gap-2 px-5 py-2.5 bg-neutral-light text-primary rounded-lg text-sm font-medium border border-neutral-gray hover:bg-neutral-gray transition-colors duration-200"
+            :class="tech.url ? 'hover:border-accent cursor-pointer' : 'cursor-default'"
           >
-            {{ tech }}
-          </span>
+            <NuxtImg
+              v-if="tech.icon"
+              :src="urlFor(tech.icon).width(20).height(20).url()"
+              :alt="`${tech.name} icon`"
+              class="w-5 h-5 object-contain"
+              width="20"
+              height="20"
+            />
+            <span>{{ tech.name }}</span>
+          </a>
         </div>
       </section>
 
@@ -233,7 +245,13 @@ const PROJECT_QUERY = groq`*[_type == "project" && slug.current == $slug][0] {
     image,
     altText
   },
-  techStack,
+  techStack[]-> {
+    _id,
+    name,
+    icon,
+    category,
+    url
+  },
   githubUrl,
   demoUrl,
   startDate,

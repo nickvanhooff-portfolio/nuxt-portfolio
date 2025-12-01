@@ -1,5 +1,9 @@
 <template>
-  <section class="section-spacing bg-neutral relative overflow-hidden">
+  <section 
+    :id="$attrs.id as string || 'projects'"
+    class="section-spacing bg-neutral relative overflow-hidden"
+    :style="{ scrollMarginTop: '80px' }"
+  >
     <!-- Subtle background gradient -->
     <div class="absolute inset-0 opacity-20">
       <div class="absolute inset-0 bg-gradient-to-br from-accent/10 via-transparent to-accent/10" />
@@ -98,17 +102,27 @@
                 v-if="project.techStack && project.techStack.length > 0" 
                 class="project-tech-stack"
               >
-                <UiTechBadge
-                  v-for="tech in project.techStack.slice(0, 4)"
-                  :key="tech"
-                  :label="tech"
-                  variant="default"
-                />
+                <div
+                  v-for="tech in project.techStack.slice(0, 8)"
+                  :key="tech._id"
+                  class="project-tech-icon"
+                  :title="tech.name"
+                >
+                  <NuxtImg
+                    v-if="tech.icon"
+                    :src="urlFor(tech.icon).width(24).height(24).url()"
+                    :alt="`${tech.name} icon`"
+                    class="w-6 h-6 object-contain opacity-70 hover:opacity-100 transition-opacity"
+                    width="24"
+                    height="24"
+                    format="webp"
+                  />
+                </div>
                 <span
-                  v-if="project.techStack.length > 4"
+                  v-if="project.techStack.length > 8"
                   class="project-tech-more"
                 >
-                  +{{ project.techStack.length - 4 }}
+                  +{{ project.techStack.length - 8 }}
                 </span>
               </div>
               
@@ -156,7 +170,6 @@ import type { SanityDocument } from '@sanity/client'
 import { createClient } from '@sanity/client'
 import groq from 'groq'
 import type { Projects, UrlBuilder } from '~/types/sanity'
-import UiTechBadge from '~/components/ui/TechBadge.vue'
 
 interface Props {
   block: Projects
@@ -190,7 +203,12 @@ const buildProjectsQuery = computed(() => {
     slug,
     description,
     featuredImage,
-    techStack,
+    techStack[]-> {
+      _id,
+      name,
+      icon,
+      category
+    },
     githubUrl,
     demoUrl,
     status,
@@ -380,8 +398,17 @@ const handleMouseLeave = (event: MouseEvent) => {
   @apply flex flex-wrap gap-2 items-center;
 }
 
+.project-tech-icon {
+  @apply flex items-center justify-center w-6 h-6 rounded;
+  transition: transform 0.2s ease;
+}
+
+.project-tech-icon:hover {
+  transform: scale(1.1);
+}
+
 .project-tech-more {
-  @apply text-xs text-primary/50 self-center;
+  @apply text-xs text-primary/50 self-center ml-1;
 }
 
 .project-links {
