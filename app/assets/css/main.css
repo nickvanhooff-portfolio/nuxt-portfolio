@@ -1,3 +1,4 @@
+@use 'keen-slider/keen-slider.css';
 /* Minimal base styles after removing Tailwind/Nuxt UI */
 :root { 
   --ui-primary: #111827;
@@ -219,4 +220,63 @@ body {
   color: rgba(14, 14, 14, 0.6);
   margin-top: 0.5rem;
   font-size: 0.875rem;
+}
+
+/* Fade in up animation - used across multiple components */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+/* Keen Slider - imported from module */
+@import 'keen-slider/keen-slider.css';
+
+/* Timeline slider enhancements */
+.keen-slider {
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  touch-action: pan-y pinch-zoom;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.keen-slider::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.keen-slider:active {
+  cursor: grabbing;
+}
+
+/* Navigation dots - ensure they're always clickable */
+.keen-slider ~ [class*="navigation"],
+.keen-slider + div [class*="dot"],
+[class*="navigation-dots"] button,
+[class*="dot"] button {
+  position: relative;
+  z-index: 9999 !important;
+  pointer-events: auto !important;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent slider from blocking dots */
+.keen-slider__slide {
+  pointer-events: auto;
 }

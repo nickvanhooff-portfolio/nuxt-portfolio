@@ -94,6 +94,25 @@ export interface ImageText extends SanityBlock {
   backgroundColor?: 'white' | 'gray' | 'primary'
 }
 
+// Experience type
+export interface ExperienceItem {
+  title: string
+  company: string
+  description?: string
+  startDate: string
+  endDate?: string
+  isCurrent?: boolean
+}
+
+export interface Experience extends SanityBlock {
+  _type: 'experience'
+  title?: string
+  description?: string
+  experiences?: ExperienceItem[]
+  layout?: 'vertical' | 'horizontal'
+  backgroundColor?: 'white' | 'gray' | 'primary'
+}
+
 // Contact type
 export interface ContactSocialLink {
   platform: 'linkedin' | 'github' | 'twitter' | 'instagram' | 'facebook' | 'website' | 'other'

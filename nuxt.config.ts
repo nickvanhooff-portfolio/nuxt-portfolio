@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   devtools: { enabled: false },
 
-  modules: ['@nuxt/eslint', '@nuxt/image', '@nuxtjs/sanity', '@nuxtjs/tailwindcss', '@tresjs/nuxt'],
+  modules: ['@nuxt/eslint', '@nuxt/image', '@nuxtjs/sanity', '@nuxtjs/tailwindcss', '@tresjs/nuxt', 'nuxt-keen-slider'],
 
   css: ['~/assets/css/main.css'],
 

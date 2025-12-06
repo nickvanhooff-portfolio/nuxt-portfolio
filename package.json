@@ -28,6 +28,7 @@
     "autoprefixer": "^10.4.20",
     "baseline-browser-mapping": "^2.8.31",
     "eslint": "^9.35.0",
+    "nuxt-keen-slider": "^1.1.1",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.9.2"
