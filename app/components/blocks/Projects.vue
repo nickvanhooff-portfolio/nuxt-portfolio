@@ -271,9 +271,11 @@ const handleMouseMove = (event: MouseEvent, index: number) => {
   const rotateY = ((x - centerX) / centerX) * 5
   
   target.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`
+  target.style.boxShadow = '0 12px 32px rgba(0, 102, 255, 0.15), 0 4px 12px rgba(0, 102, 255, 0.1)'
+  target.style.borderColor = 'rgba(0, 102, 255, 0.2)'
   
   // Update glow position
-  const glow = target.querySelector('.project-glow') as HTMLElement
+  const glow = target.querySelector('[class*="glow"]') as HTMLElement
   if (glow) {
     const glowX = (x / rect.width) * 100
     const glowY = (y / rect.height) * 100
@@ -284,15 +286,17 @@ const handleMouseMove = (event: MouseEvent, index: number) => {
 const handleMouseLeave = (event: MouseEvent) => {
   const target = event.currentTarget as HTMLElement
   if (target) {
-    target.style.transition = 'transform 0.5s cubic-bezier(0.23, 1, 0.32, 1)'
+    target.style.transition = 'all 0.5s cubic-bezier(0.23, 1, 0.32, 1)'
     target.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)'
+    target.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04)'
+    target.style.borderColor = 'rgba(0, 0, 0, 0.08)'
   }
 }
 </script>
 
 <style scoped>
-/* Fade in up animation */
-@keyframes fade-in-up {
+/* Project card animation */
+@keyframes project-fade-in-up {
   from {
     opacity: 0;
     transform: translateY(30px);
@@ -303,12 +307,6 @@ const handleMouseLeave = (event: MouseEvent) => {
   }
 }
 
-.animate-fade-in-up {
-  animation: fade-in-up 0.8s ease-out forwards;
-  opacity: 0;
-}
-
-/* Project card */
 .project-card {
   @apply relative cursor-pointer rounded-2xl overflow-hidden;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
@@ -317,7 +315,7 @@ const handleMouseLeave = (event: MouseEvent) => {
     0 4px 16px rgba(0, 0, 0, 0.08),
     0 2px 4px rgba(0, 0, 0, 0.04);
   backdrop-filter: blur(10px);
-  animation: fade-in-up 0.6s ease-out forwards;
+  animation: project-fade-in-up 0.6s ease-out forwards;
   opacity: 0;
   transform-style: preserve-3d;
   transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
@@ -334,6 +332,7 @@ const handleMouseLeave = (event: MouseEvent) => {
 .project-glow {
   @apply absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300 pointer-events-none;
   z-index: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(0, 102, 255, 0.3), transparent 70%);
 }
 
 .project-card:hover .project-glow {
@@ -363,7 +362,7 @@ const handleMouseLeave = (event: MouseEvent) => {
 
 /* Content */
 .project-content {
-  @apply relative z-10 p-5 md:p-6 space-y-4;
+  @apply relative z-10 p-5 md:p-4 space-y-4;
 }
 
 .project-header {
@@ -371,12 +370,7 @@ const handleMouseLeave = (event: MouseEvent) => {
 }
 
 .project-title {
-  @apply text-lg md:text-xl font-title font-bold text-primary flex-1 leading-tight;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  transition: color 0.3s ease;
+  @apply text-lg md:text-xl font-title font-bold text-primary flex-1 leading-tight line-clamp-2 transition-colors duration-300;
 }
 
 .project-card:hover .project-title {
@@ -388,10 +382,7 @@ const handleMouseLeave = (event: MouseEvent) => {
 }
 
 .project-description {
-  @apply text-sm text-primary/70 line-clamp-2 leading-relaxed;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  @apply text-sm md:text-xs text-primary/70 line-clamp-2 leading-relaxed;
 }
 
 .project-tech-stack {
@@ -399,8 +390,7 @@ const handleMouseLeave = (event: MouseEvent) => {
 }
 
 .project-tech-icon {
-  @apply flex items-center justify-center w-6 h-6 rounded;
-  transition: transform 0.2s ease;
+  @apply flex items-center justify-center w-6 h-6 rounded transition-transform duration-200;
 }
 
 .project-tech-icon:hover {
@@ -412,7 +402,7 @@ const handleMouseLeave = (event: MouseEvent) => {
 }
 
 .project-links {
-  @apply flex gap-4 text-sm pt-2 border-t border-neutral-gray/30;
+  @apply flex gap-4 md:gap-3 text-sm md:text-xs pt-2 border-t border-neutral-gray/30;
 }
 
 .project-link {
@@ -440,31 +430,5 @@ const handleMouseLeave = (event: MouseEvent) => {
 .project-card:hover .project-shine {
   opacity: 1;
   transform: translateX(200%) skewX(-20deg);
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .project-content {
-    @apply p-4;
-  }
-  
-  .project-title {
-    @apply text-base;
-  }
-  
-  .project-description {
-    @apply text-xs;
-  }
-  
-  .project-links {
-    @apply text-xs gap-3;
-  }
-}
-
-/* Grid adjustments for better spacing */
-@media (min-width: 1024px) {
-  .grid.lg\:grid-cols-3 {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
 }
 </style>

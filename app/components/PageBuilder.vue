@@ -8,7 +8,6 @@
       :id="getBlockId(block, index)"
     />
   </div>
-<h1 class="text-purple-400 text-5xl text-center h-screen" style="background-image: url('https://manisphotography.nl/wp-content/uploads/2025/04/manisdefretes_sep_24-40-1024x683.webp'); background-size: cover; background-position: center; background-repeat: no-repeat;">hoi ik ben Manis</h1>
 </template>
 
 <script setup lang="ts">
