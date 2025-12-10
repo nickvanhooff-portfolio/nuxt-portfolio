@@ -118,6 +118,7 @@ import type { SanityDocument } from '@sanity/client'
 import { createClient } from '@sanity/client'
 import groq from 'groq'
 import UiTechBadge from '~/components/ui/TechBadge.vue'
+import { useSeo } from '~/composables/useSeoMeta'
 
 const PROJECTS_QUERY = groq`*[_type == "project" && defined(slug.current)]|order(_createdAt desc){
   _id,
@@ -148,6 +149,18 @@ const { data: projects, pending, error } = await useAsyncData<SanityDocument[]>(
   'all-projects',
   () => client.fetch(PROJECTS_QUERY)
 )
+
+// SEO metadata
+const route = useRoute()
+const config = useRuntimeConfig()
+const siteUrl = config.public.siteUrl || (process.client ? window.location.origin : '')
+
+useSeo({
+  title: 'Projects - Portfolio',
+  description: 'Browse through my portfolio of web development projects and applications',
+  url: `${siteUrl}${route.path}`,
+  keywords: ['projects', 'portfolio', 'web development', 'applications'],
+})
 
 const urlFor = useImageUrl()
 

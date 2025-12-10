@@ -1,5 +1,5 @@
 import { useKeenSlider } from 'keen-slider/vue.es'
-import { nextTick, watch, ref, onMounted, onUnmounted } from 'vue'
+import { nextTick, watch, ref, onMounted, onUnmounted, computed } from 'vue'
 
 interface UseSliderNavigationOptions {
   enabled: boolean
@@ -50,14 +50,18 @@ export function useSliderNavigation(options: UseSliderNavigationOptions) {
     },
   } as const
 
-  // Initialize Keen Slider only if enabled and has items
+  // Only initialize slider if enabled and has items
+  // This prevents MutationObserver errors when element doesn't exist
+  const shouldInitialize = computed(() => enabled && itemsCount > 0)
+  
+  // Initialize Keen Slider - will only activate when container exists
   const [container, slider] = useKeenSlider({
     mode: 'free',
     loop: false,
     rubberband: true,
-    drag: enabled && itemsCount > 0,
+    drag: shouldInitialize.value,
     breakpoints: (breakpoints || defaultBreakpoints) as typeof defaultBreakpoints,
-    disabled: !enabled || itemsCount === 0,
+    disabled: !shouldInitialize.value,
   })
 
   // Track current slide for dots navigation
@@ -157,8 +161,8 @@ export function useSliderNavigation(options: UseSliderNavigationOptions) {
   let wheelTimeout: ReturnType<typeof setTimeout> | null = null
   let accumulatedDelta = 0
 
-  const setupWheelScrolling = () => {
-    if (!container.value || !slider.value || !enabled) return
+  const setupWheelScrolling = (): (() => void) | null => {
+    if (!container.value || !(container.value instanceof Node) || !slider.value || !enabled) return null
     
     const sliderContainer = container.value as HTMLElement
     accumulatedDelta = 0
@@ -214,27 +218,59 @@ export function useSliderNavigation(options: UseSliderNavigationOptions) {
   }
 
   onMounted(() => {
+    // Wait for DOM to be ready and container to exist
     nextTick(() => {
-      setupSliderListeners()
-      
-      if (slider.value) {
-        slider.value.update()
+      // Only setup if container element exists and is a valid Node
+      if (container.value && container.value instanceof Node && enabled && itemsCount > 0) {
+        setupSliderListeners()
+        
+        if (slider.value) {
+          slider.value.update()
+        }
       }
     })
     
+    // Watch for changes in enabled state or items count
     watch(() => [enabled, itemsCount], () => {
       nextTick(() => {
-        setupSliderListeners()
-        if (slider.value) {
-          slider.value.update()
+        if (container.value && container.value instanceof Node && enabled && itemsCount > 0) {
+          setupSliderListeners()
+          if (slider.value) {
+            slider.value.update()
+          }
         }
       })
     })
     
-    const cleanup = setupWheelScrolling()
+    // Watch for container element to become available
+    watch(container, (newContainer) => {
+      if (newContainer && newContainer instanceof Node && enabled && itemsCount > 0) {
+        nextTick(() => {
+          setupSliderListeners()
+          if (slider.value) {
+            slider.value.update()
+          }
+        })
+      }
+    }, { immediate: true })
+    
+    // Setup wheel scrolling only when container is ready
+    let cleanup: (() => void) | null = null
+    const setupWheelWhenReady = () => {
+      if (container.value && container.value instanceof Node && enabled && itemsCount > 0) {
+        const cleanupFn = setupWheelScrolling()
+        cleanup = cleanupFn || null
+      }
+    }
+    
+    nextTick(() => {
+      setupWheelWhenReady()
+    })
     
     onUnmounted(() => {
-      cleanup?.()
+      if (cleanup) {
+        cleanup()
+      }
     })
   })
 
@@ -245,4 +281,3 @@ export function useSliderNavigation(options: UseSliderNavigationOptions) {
     goToSlide,
   }
 }
-

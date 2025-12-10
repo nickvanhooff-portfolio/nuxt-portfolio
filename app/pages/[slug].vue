@@ -41,12 +41,15 @@
 import type { SanityDocument } from '@sanity/client'
 import { createClient } from '@sanity/client'
 import groq from 'groq'
+import { useSeo } from '~/composables/useSeoMeta'
 
 const PAGE_QUERY = groq`*[_type == "page" && slug.current == $slug][0] {
   _id,
   title,
   slug,
   metaDescription,
+  ogImage,
+  keywords,
   pageBuilder[] {
     ...,
     _type == "techStack" => {
@@ -94,12 +97,36 @@ const { data: page } = await useAsyncData<SanityDocument>(
 )
 
 // SEO metadata
-useHead({
+const route = useRoute()
+const config = useRuntimeConfig()
+const siteUrl = config.public.siteUrl || (process.client ? window.location.origin : '')
+const urlFor = useImageUrl()
+
+const ogImage = page.value?.ogImage
+  ? urlFor(page.value.ogImage).width(1200).height(630).url()
+  : undefined
+
+useSeo({
   title: page.value ? `${page.value.title} - Portfolio` : 'Page Not Found',
-  meta: [
+  description: page.value?.metaDescription || '',
+  image: ogImage,
+  url: `${siteUrl}${route.path}`,
+  keywords: page.value?.keywords,
+})
+
+// Structured data (JSON-LD)
+useHead({
+  script: [
     {
-      name: 'description',
-      content: page.value?.metaDescription || '',
+      type: 'application/ld+json',
+      children: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebPage',
+        name: page.value?.title || 'Page',
+        description: page.value?.metaDescription || '',
+        url: `${siteUrl}${route.path}`,
+        ...(ogImage && { image: ogImage }),
+      }),
     },
   ],
 })

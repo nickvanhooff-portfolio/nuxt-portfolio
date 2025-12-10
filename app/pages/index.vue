@@ -51,6 +51,7 @@
 import type { SanityDocument } from '@sanity/client'
 import { createClient } from '@sanity/client'
 import groq from 'groq'
+import { useSeo } from '~/composables/useSeoMeta'
 
 // Query for home page (slug: "home")
 const HOME_PAGE_QUERY = groq`*[_type == "page" && slug.current == "home"][0] {
@@ -58,6 +59,8 @@ const HOME_PAGE_QUERY = groq`*[_type == "page" && slug.current == "home"][0] {
   title,
   slug,
   metaDescription,
+  ogImage,
+  keywords,
   pageBuilder[] {
     ...,
     _type == "techStack" => {
@@ -87,12 +90,38 @@ const { data: page, pending, error } = await useAsyncData<SanityDocument>(
 )
 
 // SEO metadata
-useHead({
+const route = useRoute()
+const config = useRuntimeConfig()
+const siteUrl = config.public.siteUrl || (process.client ? window.location.origin : '')
+const urlFor = useImageUrl()
+
+const ogImage = page.value?.ogImage
+  ? urlFor(page.value.ogImage).width(1200).height(630).url()
+  : page.value?.pageBuilder?.find((b: any) => b._type === 'hero' && b.backgroundImage)
+    ? urlFor(page.value.pageBuilder.find((b: any) => b._type === 'hero' && b.backgroundImage).backgroundImage).width(1200).height(630).url()
+    : undefined
+
+useSeo({
   title: page.value ? `${page.value.title} - Portfolio` : 'Portfolio',
-  meta: [
+  description: page.value?.metaDescription || 'Portfolio website showcasing projects and experience',
+  image: ogImage,
+  url: `${siteUrl}${route.path}`,
+  keywords: page.value?.keywords || ['portfolio', 'developer', 'web development'],
+})
+
+// Structured data (JSON-LD)
+useHead({
+  script: [
     {
-      name: 'description',
-      content: page.value?.metaDescription || '',
+      type: 'application/ld+json',
+      children: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: page.value?.title || 'Portfolio',
+        description: page.value?.metaDescription || 'Portfolio website',
+        url: `${siteUrl}${route.path}`,
+        ...(ogImage && { image: ogImage }),
+      }),
     },
   ],
 })

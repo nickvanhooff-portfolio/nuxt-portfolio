@@ -65,10 +65,6 @@ const blockComponentMap = Object.entries(blockModules).reduce((map, [path, modul
   return map
 }, {} as Record<string, Component>)
 
-// Debug: Log available block types in development
-if (process.dev) {
-  console.log('Available block components:', Object.keys(blockComponentMap))
-}
 
 function getBlockComponent(block: SanityBlock): Component {
   if (!block?._type) {

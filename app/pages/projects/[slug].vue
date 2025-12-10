@@ -234,6 +234,7 @@ import type { SanityDocument } from '@sanity/client'
 import { createClient } from '@sanity/client'
 import groq from 'groq'
 import PageBuilder from '~/components/PageBuilder.vue'
+import { useSeo } from '~/composables/useSeoMeta'
 
 const PROJECT_QUERY = groq`*[_type == "project" && slug.current == $slug][0] {
   _id,
@@ -241,6 +242,8 @@ const PROJECT_QUERY = groq`*[_type == "project" && slug.current == $slug][0] {
   slug,
   description,
   featuredImage,
+  ogImage,
+  keywords,
   images[] {
     image,
     altText
@@ -307,17 +310,46 @@ const { data: project } = await useAsyncData<SanityDocument>(
 )
 
 // SEO metadata
-useHead({
+const route = useRoute()
+const config = useRuntimeConfig()
+const siteUrl = config.public.siteUrl || (process.client ? window.location.origin : '')
+const urlFor = useImageUrl()
+
+const ogImage = project.value?.ogImage
+  ? urlFor(project.value.ogImage).width(1200).height(630).url()
+  : project.value?.featuredImage
+    ? urlFor(project.value.featuredImage).width(1200).height(630).url()
+    : undefined
+
+useSeo({
   title: project.value ? `${project.value.title} - Portfolio` : 'Project Not Found',
-  meta: [
+  description: project.value?.description || 'Project details',
+  image: ogImage,
+  url: `${siteUrl}${route.path}`,
+  type: 'article',
+  keywords: project.value?.keywords || project.value?.tags,
+})
+
+// Structured data (JSON-LD) for Project
+useHead({
+  script: [
     {
-      name: 'description',
-      content: project.value?.description || 'Project details',
+      type: 'application/ld+json',
+      children: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'CreativeWork',
+        name: project.value?.title,
+        description: project.value?.description,
+        url: `${siteUrl}${route.path}`,
+        ...(ogImage && { image: ogImage }),
+        ...(project.value?.githubUrl && { codeRepository: project.value.githubUrl }),
+        ...(project.value?.demoUrl && { url: project.value.demoUrl }),
+        ...(project.value?.startDate && { dateCreated: project.value.startDate }),
+        ...(project.value?.endDate && { datePublished: project.value.endDate }),
+      }),
     },
   ],
 })
-
-const urlFor = useImageUrl()
 
 const formatStatus = (status: string): string => {
   return status

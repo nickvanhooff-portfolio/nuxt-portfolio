@@ -66,6 +66,8 @@ export default defineNuxtConfig({
     public: {
       NUXT_PUBLIC_SANITY_PROJECT_ID: process.env.NUXT_PUBLIC_SANITY_PROJECT_ID,
       NUXT_PUBLIC_SANITY_DATASET: process.env.NUXT_PUBLIC_SANITY_DATASET || "production",
+      // Site URL for SEO (canonical URLs, Open Graph, etc.)
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://yourdomain.com',
     },
   },
   // Disable Sanity module to avoid React runtime conflicts

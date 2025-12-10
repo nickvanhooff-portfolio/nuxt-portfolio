@@ -147,18 +147,6 @@ interface Props {
 
 const props = defineProps<Props>()
 
-// Debug: Log block data
-if (process.dev) {
-  watch(() => props.block, (block) => {
-    console.log('Experience Block Data:', {
-      _type: block?._type,
-      title: block?.title,
-      experiences: block?.experiences,
-      experiencesLength: block?.experiences?.length,
-      fullBlock: block
-    })
-  }, { immediate: true })
-}
 
 // Sort experiences by start date (oldest first - chronological order)
 const sortedExperiences = computed(() => {
@@ -201,8 +189,11 @@ const backgroundColorClass = computed(() => {
 
 // Use slider composable for horizontal layout
 // Only enable if layout is horizontal AND there are experiences
+const isHorizontalLayout = computed(() => props.block.layout === 'horizontal')
+const hasExperiences = computed(() => sortedExperiences.value.length > 0)
+
 const { container, currentSlide, goToSlide } = useSliderNavigation({
-  enabled: props.block.layout === 'horizontal' && sortedExperiences.value.length > 0,
+  enabled: isHorizontalLayout.value && hasExperiences.value,
   itemsCount: sortedExperiences.value.length,
 })
 
