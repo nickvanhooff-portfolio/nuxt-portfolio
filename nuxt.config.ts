@@ -21,6 +21,15 @@ export default defineNuxtConfig({
 
   compatibilityDate: '2025-07-16',
   
+  // HTML attributes - set lang attribute for accessibility
+  app: {
+    head: {
+      htmlAttrs: {
+        lang: 'nl',
+      },
+    },
+  },
+  
   // Performance optimizations
   nitro: {
     // Enable compression (gzip/brotli) for production
@@ -55,10 +64,19 @@ export default defineNuxtConfig({
     providers: {
       sanity: {},
     },
-    // Quality settings
-    quality: 80,
-    // Format optimization
+    // Quality settings - lower default for better performance
+    quality: 75,
+    // Format optimization - prefer webp and avif
     format: ['webp', 'avif'],
+    // Screen densities to generate
+    screens: {
+      xs: 320,
+      sm: 640,
+      md: 768,
+      lg: 1024,
+      xl: 1280,
+      xxl: 1536,
+    },
   },
   
   // Tailwind CSS optimization

@@ -36,13 +36,14 @@
       class="absolute inset-0 z-0"
     >
       <NuxtImg
-        :src="urlFor(block.backgroundImage).width(1920).height(1080).url()"
+        :src="urlFor(block.backgroundImage).width(1280).height(720).url()"
         :alt="block.heading || 'Hero background'"
         class="w-full h-full object-cover opacity-10"
         sizes="100vw"
-        width="1920"
-        height="1080"
+        width="1280"
+        height="720"
         format="webp"
+        :quality="60"
         loading="eager"
         fetchpriority="high"
         aria-hidden="true"
