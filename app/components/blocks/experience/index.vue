@@ -45,7 +45,7 @@
                 :key="index"
                 :experience="experience"
                 :index="index"
-                :backgroundColor="block.backgroundColor"
+                :background-color="block.backgroundColor"
                 :layout="block.layout"
               />
             </div>
@@ -86,7 +86,7 @@
                   :key="`experience-${index}`"
                   :experience="experience"
                   :index="index"
-                  :backgroundColor="block.backgroundColor"
+                  :background-color="block.backgroundColor"
                   :layout="block.layout"
                 />
               </div>
@@ -99,9 +99,7 @@
                 <button
                   v-for="(experience, index) in sortedExperiences"
                   :key="`dot-${index}`"
-                  @click.stop.prevent="goToSlide(index)"
-                  @mousedown.stop
-                  @touchstart.stop
+                  type="button"
                   class="relative rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 cursor-pointer pointer-events-auto z-50"
                   :style="{ 
                     minWidth: '8px',
@@ -117,7 +115,9 @@
                         : 'bg-primary/30 hover:bg-primary/50 w-2 h-2')
                   "
                   :aria-label="`Go to experience from ${getYear(experience.startDate)}`"
-                  type="button"
+                  @click.stop.prevent="goToSlide(index)"
+                  @mousedown.stop
+                  @touchstart.stop
                 >
                   <span class="sr-only">Navigate to experience from {{ getYear(experience.startDate) }}</span>
                 </button>
@@ -141,6 +141,7 @@
 <script setup lang="ts">
 import type { Experience } from '~/types/sanity'
 import { useSliderNavigation } from '~/composables/useSliderNavigation'
+import ExperienceItem from './ExperienceItem.vue'
 
 interface Props {
   block: Experience
@@ -148,11 +149,41 @@ interface Props {
 
 const props = defineProps<Props>()
 
+// Debug: Log block data
+if (process.dev) {
+  watch(() => props.block, (block) => {
+    console.log('Experience Block Data:', {
+      _type: block?._type,
+      title: block?.title,
+      experiences: block?.experiences,
+      experiencesLength: block?.experiences?.length,
+      fullBlock: block
+    })
+  }, { immediate: true })
+}
+
 // Sort experiences by start date (oldest first - chronological order)
 const sortedExperiences = computed(() => {
-  if (!props.block.experiences) return []
+  if (!props.block.experiences) {
+    if (process.dev) {
+      console.warn('Experience block has no experiences array:', props.block)
+    }
+    return []
+  }
   
-  return [...props.block.experiences].sort((a, b) => {
+  // Filter out any invalid experiences
+  const validExperiences = props.block.experiences.filter((exp: any) => {
+    return exp && exp.title && exp.company && exp.startDate
+  })
+  
+  if (process.dev && validExperiences.length !== props.block.experiences.length) {
+    console.warn('Some experiences were filtered out:', {
+      total: props.block.experiences.length,
+      valid: validExperiences.length
+    })
+  }
+  
+  return [...validExperiences].sort((a, b) => {
     const dateA = new Date(a.startDate).getTime()
     const dateB = new Date(b.startDate).getTime()
     return dateA - dateB
@@ -171,8 +202,9 @@ const backgroundColorClass = computed(() => {
 })
 
 // Use slider composable for horizontal layout
+// Only enable if layout is horizontal AND there are experiences
 const { container, currentSlide, goToSlide } = useSliderNavigation({
-  enabled: props.block.layout === 'horizontal',
+  enabled: props.block.layout === 'horizontal' && sortedExperiences.value.length > 0,
   itemsCount: sortedExperiences.value.length,
 })
 
@@ -181,3 +213,4 @@ const getYear = (dateString: string): string => {
   return date.getFullYear().toString()
 }
 </script>
+

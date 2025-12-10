@@ -26,6 +26,8 @@ const props = withDefaults(defineProps<Props>(), {
   size: 'md',
   type: 'button',
   fullWidth: false,
+  href: undefined,
+  to: undefined,
 })
 
 const emit = defineEmits<{

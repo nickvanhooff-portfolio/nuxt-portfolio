@@ -169,7 +169,7 @@
 import type { SanityDocument } from '@sanity/client'
 import { createClient } from '@sanity/client'
 import groq from 'groq'
-import type { Projects, UrlBuilder } from '~/types/sanity'
+import type { Projects } from '~/types/sanity'
 
 interface Props {
   block: Projects
@@ -256,7 +256,7 @@ const handleMouseEnter = (event: MouseEvent) => {
   }
 }
 
-const handleMouseMove = (event: MouseEvent, index: number) => {
+const handleMouseMove = (event: MouseEvent, _index: number) => {
   const target = event.currentTarget as HTMLElement
   if (!target) return
 

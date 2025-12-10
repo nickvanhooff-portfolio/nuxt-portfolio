@@ -1,16 +1,17 @@
 <template>
   <div>
     <component
-      v-for="(block, index) in blocks"
       :is="getBlockComponent(block)"
+      v-for="(block, index) in blocks"
+      :id="getBlockId(block, index)"
       :key="block._key || block._id || `block-${index}`"
       :block="block"
-      :id="getBlockId(block, index)"
     />
   </div>
 </template>
 
 <script setup lang="ts">
+import type { Component } from 'vue'
 import type { SanityBlock } from '~/types/sanity'
 import BlocksUnknownBlock from '~/components/blocks/UnknownBlock.vue'
 
@@ -18,7 +19,7 @@ interface Props {
   blocks: SanityBlock[]
 }
 
-const props = defineProps<Props>()
+defineProps<Props>()
 
 // Components that don't match their Sanity block type name
 const BLOCK_TYPE_MAPPINGS: Record<string, string> = {
@@ -31,11 +32,22 @@ function getBlockTypeFromFileName(fileName: string): string {
 }
 
 function extractComponentName(path: string): string {
-  return path.split('/').pop()?.replace('.vue', '') || ''
+  // Handle both flat files and folder/index.vue structure
+  const parts = path.split('/')
+  const fileName = parts.pop()?.replace('.vue', '') || ''
+  
+  // If it's index.vue, use the folder name instead
+  if (fileName === 'index') {
+    const folderName = parts.pop()
+    return folderName || fileName
+  }
+  
+  return fileName
 }
 
 // Auto-discover all block components from the blocks folder
-const blockModules = import.meta.glob<{ default: any }>('~/components/blocks/*.vue', { eager: true })
+// Support both flat structure (*.vue) and folder structure (*/index.vue)
+const blockModules = import.meta.glob<{ default: Component }>('~/components/blocks/**/*.vue', { eager: true })
 
 const blockComponentMap = Object.entries(blockModules).reduce((map, [path, module]) => {
   const componentName = extractComponentName(path)
@@ -51,14 +63,31 @@ const blockComponentMap = Object.entries(blockModules).reduce((map, [path, modul
   }
   
   return map
-}, {} as Record<string, any>)
+}, {} as Record<string, Component>)
 
-function getBlockComponent(block: SanityBlock): any {
+// Debug: Log available block types in development
+if (process.dev) {
+  console.log('Available block components:', Object.keys(blockComponentMap))
+}
+
+function getBlockComponent(block: SanityBlock): Component {
   if (!block?._type) {
+    if (process.dev) {
+      console.warn('Block has no _type:', block)
+    }
     return BlocksUnknownBlock
   }
 
-  return blockComponentMap[block._type] || BlocksUnknownBlock
+  const component = blockComponentMap[block._type]
+  
+  if (!component) {
+    if (process.dev) {
+      console.warn(`No component found for block type "${block._type}". Available types:`, Object.keys(blockComponentMap))
+    }
+    return BlocksUnknownBlock
+  }
+
+  return component
 }
 
 function getBlockId(block: SanityBlock, index: number): string {

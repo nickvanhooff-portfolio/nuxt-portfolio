@@ -51,7 +51,6 @@
 import type { SanityDocument } from '@sanity/client'
 import { createClient } from '@sanity/client'
 import groq from 'groq'
-import PageBuilder from '~/components/PageBuilder.vue'
 
 // Query for home page (slug: "home")
 const HOME_PAGE_QUERY = groq`*[_type == "page" && slug.current == "home"][0] {

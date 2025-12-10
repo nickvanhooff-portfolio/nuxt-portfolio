@@ -48,15 +48,16 @@ export function useSliderNavigation(options: UseSliderNavigationOptions) {
         origin: 'auto' as const,
       },
     },
-  }
+  } as const
 
-  // Initialize Keen Slider (must be called unconditionally)
+  // Initialize Keen Slider only if enabled and has items
   const [container, slider] = useKeenSlider({
     mode: 'free',
     loop: false,
     rubberband: true,
-    drag: true,
-    breakpoints: breakpoints || defaultBreakpoints,
+    drag: enabled && itemsCount > 0,
+    breakpoints: (breakpoints || defaultBreakpoints) as typeof defaultBreakpoints,
+    disabled: !enabled || itemsCount === 0,
   })
 
   // Track current slide for dots navigation
@@ -66,7 +67,9 @@ export function useSliderNavigation(options: UseSliderNavigationOptions) {
   const getClosestSlideIndex = (): number => {
     if (!slider.value || itemsCount === 0) return 0
     
-    const track = slider.value.track.details
+    const track = slider.value.track?.details
+    if (!track || track.abs === undefined || track.abs === null) return 0
+    
     const abs = track.abs
     const maxIdx = itemsCount - 1
     
@@ -115,7 +118,19 @@ export function useSliderNavigation(options: UseSliderNavigationOptions) {
 
   // Setup slider event listeners
   const setupSliderListeners = () => {
-    if (slider.value && enabled) {
+    if (slider.value && enabled && itemsCount > 0) {
+      // Check if track is initialized before setting up listeners
+      const track = slider.value.track?.details
+      if (!track) {
+        // Wait a bit for slider to initialize
+        setTimeout(() => {
+          if (slider.value?.track?.details) {
+            setupSliderListeners()
+          }
+        }, 100)
+        return
+      }
+      
       slider.value.on('slideChanged', () => {
         currentSlide.value = getClosestSlideIndex()
       })
@@ -134,9 +149,7 @@ export function useSliderNavigation(options: UseSliderNavigationOptions) {
         currentSlide.value = getClosestSlideIndex()
       })
       
-      if (itemsCount > 0) {
-        currentSlide.value = 0
-      }
+      currentSlide.value = 0
     }
   }
 
@@ -167,11 +180,17 @@ export function useSliderNavigation(options: UseSliderNavigationOptions) {
         
         wheelTimeout = setTimeout(() => {
           if (slider.value && Math.abs(accumulatedDelta) > 5) {
-            const currentPosition = slider.value.track.details.abs
+            const track = slider.value.track?.details
+            if (!track || track.abs === undefined || track.abs === null) {
+              accumulatedDelta = 0
+              return
+            }
+            
+            const currentPosition = track.abs
             const slideMovement = accumulatedDelta / 8
             const newPosition = Math.round(currentPosition + slideMovement)
             
-            const slidesLength = slider.value.track.details.slides.length
+            const slidesLength = track.slides?.length ?? 0
             const minPosition = 0
             const maxPosition = slidesLength > 0 ? slidesLength - 1 : 0
             const clampedPosition = Math.max(minPosition, Math.min(maxPosition, newPosition))

@@ -259,7 +259,36 @@ const PROJECT_QUERY = groq`*[_type == "project" && slug.current == $slug][0] {
   status,
   tags,
   content,
-  pageBuilder
+  pageBuilder[] {
+    ...,
+    _type == "techStack" => {
+      ...,
+      techItems[]-> {
+        _id,
+        name,
+        icon,
+        category,
+        url
+      }
+    },
+    _type == "experience" => {
+      _type,
+      _key,
+      title,
+      description,
+      layout,
+      backgroundColor,
+      experiences[] {
+        _key,
+        title,
+        company,
+        description,
+        startDate,
+        endDate,
+        isCurrent
+      }
+    }
+  }
 }`
 
 const { params } = useRoute()

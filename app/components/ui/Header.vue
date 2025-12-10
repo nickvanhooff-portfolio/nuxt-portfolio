@@ -55,8 +55,8 @@
         <!-- Mobile Menu Button -->
         <button
           class="md:hidden relative w-10 h-10 flex flex-col justify-center items-center bg-transparent border-none cursor-pointer z-50"
-          @click="toggleMobileMenu"
           aria-label="Toggle menu"
+          @click="toggleMobileMenu"
         >
           <span
             class="absolute w-6 h-0.5 bg-primary transition-all duration-300 ease-out"

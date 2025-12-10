@@ -65,9 +65,9 @@
               :class="itemsContainerClass"
             >
               <component
+                :is="item.url ? 'a' : 'div'"
                 v-for="(item, itemIndex) in category.items"
                 :key="item._id"
-                :is="item.url ? 'a' : 'div'"
                 :href="item.url"
                 :target="item.url ? '_blank' : undefined"
                 :rel="item.url ? 'noopener noreferrer' : undefined"
@@ -256,7 +256,7 @@ const handleMouseEnter = (event: MouseEvent) => {
   }
 }
 
-const handleMouseMove = (event: MouseEvent, index: number) => {
+const handleMouseMove = (event: MouseEvent, _index: number) => {
   const target = event.currentTarget as HTMLElement
   if (!target) return
 

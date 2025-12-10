@@ -58,11 +58,11 @@
             <div class="text-gray-500 select-none min-w-[24px] text-right">1</div>
             <div class="flex items-center flex-wrap justify-center gap-1">
               <span class="text-[#c678dd]">const</span>
-              <span class="w-1"></span>
+              <span class="w-1" />
               <span class="text-[#61afef]">developer</span>
-              <span class="w-1"></span>
+              <span class="w-1" />
               <span class="text-[#56b6c2]">=</span>
-              <span class="w-1"></span>
+              <span class="w-1" />
               <span class="text-[#98c379]">'</span>
               <h1 class="inline text-[clamp(2.5rem,8vw,5rem)] font-extrabold text-slate-50 leading-tight tracking-tight mx-1">
                 {{ block.heading }}
@@ -90,7 +90,7 @@
             class="inline-flex items-center gap-1.5 px-8 py-4 bg-indigo-500/10 border border-indigo-500/30 rounded-lg font-mono text-sm md:text-base no-underline transition-all duration-300 ease-in-out backdrop-blur-sm hover:bg-indigo-500/20 hover:border-indigo-500 hover:-translate-y-0.5 hover:shadow-[0_10px_40px_rgba(99,102,241,0.3)] group"
           >
             <span class="text-[#c678dd]">explore</span>
-            <span class="w-1.5"></span>
+            <span class="w-1.5" />
             <span class="text-[#e06c75]">(</span>
             <span class="text-[#98c379]">'{{ block.ctaButton.text }}'</span>
             <span class="text-[#e06c75]">)</span>

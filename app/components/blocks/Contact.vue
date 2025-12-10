@@ -74,7 +74,7 @@
                     required
                     class="w-full px-4 py-3 rounded-xl border border-black/10 bg-white/5 text-primary placeholder-primary/40 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent/50 focus:bg-white/8 focus:shadow-[0_0_0_3px_rgba(0,102,255,0.1)]"
                     placeholder="Je naam"
-                  />
+                  >
                 </div>
                 
                 <div class="space-y-2">
@@ -92,7 +92,7 @@
                     required
                     class="w-full px-4 py-3 rounded-xl border border-black/10 bg-white/5 text-primary placeholder-primary/40 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent/50 focus:bg-white/8 focus:shadow-[0_0_0_3px_rgba(0,102,255,0.1)]"
                     placeholder="je@email.com"
-                  />
+                  >
                 </div>
                 
                 <div class="space-y-2">
@@ -403,8 +403,13 @@ const handleSubmit = async (event: Event) => {
         throw new Error('Form submission failed')
       }
     }
-  } catch (error: any) {
-    submitMessage.value = error.data?.message || 'Er ging iets mis. Probeer het later opnieuw.'
+  } catch (error: unknown) {
+    const errorMessage = error && typeof error === 'object' && 'data' in error && 
+      typeof error.data === 'object' && error.data !== null && 'message' in error.data &&
+      typeof error.data.message === 'string'
+      ? error.data.message
+      : 'Er ging iets mis. Probeer het later opnieuw.'
+    submitMessage.value = errorMessage
     submitMessageType.value = 'error'
   } finally {
     isSubmitting.value = false

@@ -25,6 +25,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   variant: 'default',
+  icon: undefined,
 })
 
 const urlFor = useImageUrl()

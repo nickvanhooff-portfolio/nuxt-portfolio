@@ -28,7 +28,7 @@
         <ExperienceItemContent 
           :experience="experience"
           :index="index"
-          :backgroundColor="backgroundColor"
+          :background-color="backgroundColor"
           :layout="layout"
         />
       </div>
@@ -68,7 +68,7 @@
         <ExperienceItemContent 
           :experience="experience"
           :index="index"
-          :backgroundColor="backgroundColor"
+          :background-color="backgroundColor"
           :layout="layout"
         />
       </div>
@@ -78,6 +78,7 @@
 
 <script setup lang="ts">
 import type { ExperienceItem } from '~/types/sanity'
+import ExperienceItemContent from './ExperienceItemContent.vue'
 
 interface Props {
   experience: ExperienceItem
@@ -88,5 +89,4 @@ interface Props {
 
 defineProps<Props>()
 </script>
-
 
