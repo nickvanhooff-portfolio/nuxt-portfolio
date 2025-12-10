@@ -95,6 +95,7 @@
                       width="40"
                       height="40"
                       format="webp"
+                      loading="lazy"
                     />
                   </div>
                   <span class="tech-item-name">{{ item.name }}</span>

@@ -66,8 +66,8 @@
                 height="300"
                 :alt="project.title"
                 format="webp"
-                loading="eager"
-                fetchpriority="high"
+                :loading="index < 3 ? 'eager' : 'lazy'"
+                :fetchpriority="index < 3 ? 'high' : 'auto'"
                 class="project-image"
               />
               <div class="project-image-overlay" />

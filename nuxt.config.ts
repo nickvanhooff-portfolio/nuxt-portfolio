@@ -1,6 +1,11 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  devtools: { enabled: process.dev },
+  devtools: {
+    enabled: process.dev,
+    timeline: {
+      enabled: true
+    }
+  },
 
   modules: [
     '@nuxt/eslint',
@@ -15,6 +20,35 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
 
   compatibilityDate: '2025-07-16',
+  
+  // Performance optimizations
+  nitro: {
+    // Enable compression (gzip/brotli) for production
+    compressPublicAssets: true,
+    // Minify HTML output
+    minify: true,
+  },
+  
+  // Image optimization
+  image: {
+    // Use Sanity as image provider
+    providers: {
+      sanity: {},
+    },
+    // Quality settings
+    quality: 80,
+    // Format optimization
+    format: ['webp', 'avif'],
+  },
+  
+  // Tailwind CSS optimization
+  tailwindcss: {
+    // Enable JIT mode for smaller CSS output
+    exposeConfig: false,
+    // Viewer is not needed in production
+    viewer: false,
+  },
+  
   sanity: {
     projectId: process.env.NUXT_PUBLIC_SANITY_PROJECT_ID,
     dataset: process.env.NUXT_PUBLIC_SANITY_DATASET || 'production',

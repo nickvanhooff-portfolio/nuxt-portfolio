@@ -27,6 +27,7 @@
                 width="800"
                 height="800"
                 format="webp"
+                loading="lazy"
               />
               <!-- Subtle overlay on hover -->
               <div class="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -57,6 +58,7 @@
                 width="800"
                 height="800"
                 format="webp"
+                loading="lazy"
               />
               <!-- Subtle overlay on hover -->
               <div class="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
