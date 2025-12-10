@@ -25,6 +25,8 @@ export default defineEventHandler((event) => {
     "font-src 'self' https://fonts.gstatic.com data:",
     // PostHog and Vercel connect-src for API calls and event tracking
     `connect-src 'self' https://cdn.sanity.io https://*.apicdn.sanity.io ${posthogDomains} ${vercelDomains}`,
+    // Allow Vercel Live Feedback iframes
+    `frame-src 'self' ${vercelDomains}`,
     "frame-ancestors 'none'", // Prevent clickjacking (redundant with X-Frame-Options but recommended)
     "base-uri 'self'",
     "form-action 'self'",
