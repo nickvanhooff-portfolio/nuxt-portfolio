@@ -10,18 +10,21 @@ export default defineEventHandler((event) => {
   // PostHog domains - supports both US and EU regions
   const posthogDomains = 'https://*.posthog.com https://app.posthog.com https://us.i.posthog.com https://eu.i.posthog.com'
   
+  // Vercel domains for live feedback and preview deployments
+  const vercelDomains = 'https://vercel.live https://*.vercel.live'
+  
   const csp = [
     "default-src 'self'",
     // In dev, allow unsafe-inline/eval for HMR; in production, be more strict
-    // PostHog scripts are allowed
+    // PostHog and Vercel scripts are allowed
     isDev 
-      ? `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.sanity.io ${posthogDomains}`
-      : `script-src 'self' 'unsafe-inline' https://cdn.sanity.io ${posthogDomains}`, // Keep unsafe-inline for Nuxt
+      ? `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.sanity.io ${posthogDomains} ${vercelDomains}`
+      : `script-src 'self' 'unsafe-inline' https://cdn.sanity.io ${posthogDomains} ${vercelDomains}`, // Keep unsafe-inline for Nuxt
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "img-src 'self' data: https://cdn.sanity.io https://*.apicdn.sanity.io",
     "font-src 'self' https://fonts.gstatic.com data:",
-    // PostHog connect-src for API calls and event tracking
-    `connect-src 'self' https://cdn.sanity.io https://*.apicdn.sanity.io ${posthogDomains}`,
+    // PostHog and Vercel connect-src for API calls and event tracking
+    `connect-src 'self' https://cdn.sanity.io https://*.apicdn.sanity.io ${posthogDomains} ${vercelDomains}`,
     "frame-ancestors 'none'", // Prevent clickjacking (redundant with X-Frame-Options but recommended)
     "base-uri 'self'",
     "form-action 'self'",
