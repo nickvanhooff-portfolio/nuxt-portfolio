@@ -13,7 +13,6 @@ export default defineNuxtConfig({
     '@nuxtjs/sanity',
     '@nuxtjs/tailwindcss',
     '@tresjs/nuxt',
-    'nuxt-keen-slider',
     '@nuxt/hints'
   ],
 
@@ -52,7 +51,8 @@ export default defineNuxtConfig({
           // Note: geolocation=() blocks browser Geolocation API, NOT IP-based location tracking
           // Analytics tools (PostHog, Google Analytics, etc.) use IP-based location, not the browser API
           // So tracking will still work! This only blocks native browser geolocation requests.
-          'Permissions-Policy': 'geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=(), speaker=(), vibrate=(), fullscreen=(self), sync-xhr=()',
+          // Removed 'speaker' and 'vibrate' as they are deprecated/not recognized by browsers
+          'Permissions-Policy': 'geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=(), fullscreen=(self), sync-xhr=()',
         },
       },
     },

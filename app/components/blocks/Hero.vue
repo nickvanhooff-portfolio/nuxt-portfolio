@@ -127,9 +127,11 @@ interface Props {
   block: Hero
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
 
 const urlFor = useImageUrl()
+
+// Removed preload to avoid warning - NuxtImg with fetchpriority="high" handles optimization
 </script>
 
 <style scoped>

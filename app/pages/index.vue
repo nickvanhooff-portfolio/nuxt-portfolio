@@ -72,6 +72,23 @@ const HOME_PAGE_QUERY = groq`*[_type == "page" && slug.current == "home"][0] {
         category,
         url
       }
+    },
+    _type == "experience" => {
+      _type,
+      _key,
+      title,
+      description,
+      layout,
+      backgroundColor,
+      experiences[] {
+        _key,
+        title,
+        company,
+        description,
+        startDate,
+        endDate,
+        isCurrent
+      }
     }
   }
 }`

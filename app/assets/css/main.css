@@ -1,4 +1,4 @@
-@use 'keen-slider/keen-slider.css';
+/* Keen Slider removed - using Swiper instead */
 /* Minimal base styles after removing Tailwind/Nuxt UI */
 :root { 
   --ui-primary: #111827;
@@ -269,44 +269,83 @@ body {
   opacity: 0;
 }
 
-/* Keen Slider - imported from module */
-@import 'keen-slider/keen-slider.css';
+/* Keen Slider removed - using Swiper instead */
 
-/* Timeline slider enhancements */
-.keen-slider {
+/* Swiper slider enhancements */
+.swiper {
   cursor: grab;
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
-  touch-action: pan-y pinch-zoom;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
+  overflow: hidden;
+  width: 100%;
+  position: relative;
 }
 
-.keen-slider::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
-}
-
-.keen-slider:active {
+.swiper:active {
   cursor: grabbing;
 }
 
-/* Navigation dots - ensure they're always clickable */
-.keen-slider ~ [class*="navigation"],
-.keen-slider + div [class*="dot"],
-[class*="navigation-dots"] button,
-[class*="dot"] button {
+/* Swiper wrapper - ensures horizontal layout */
+.swiper-wrapper {
+  display: flex;
+  align-items: stretch;
+  transition-timing-function: linear;
+}
+
+/* Swiper slide styling - ensures slides are side by side */
+.swiper-slide {
+  height: auto;
+  flex-shrink: 0;
+  display: flex;
+  align-items: stretch;
+}
+
+/* Swiper Pagination (Navigation dots) */
+.swiper-pagination {
   position: relative;
-  z-index: 9999 !important;
-  pointer-events: auto !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2.5rem;
+  z-index: 50;
+}
+
+.swiper-pagination-bullet {
+  width: 8px;
+  height: 8px;
+  display: inline-block;
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.3);
+  opacity: 1;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  padding: 8px; /* Increase clickable area to 24px */
+  margin: 0;
+  border: none;
+  outline: none;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Prevent slider from blocking dots */
-.keen-slider__slide {
-  pointer-events: auto;
+.swiper-pagination-bullet-active {
+  width: 32px;
+  height: 10px;
+  background: var(--color-primary, #0E0E0E);
+  border-radius: 9999px;
+}
+
+/* Ensure pagination is always clickable */
+.swiper-pagination-bullet {
+  pointer-events: auto !important;
+  z-index: 50;
+}
+
+/* Focus styles for accessibility */
+.swiper-pagination-bullet:focus {
+  outline: 2px solid var(--color-accent, #0066FF);
+  outline-offset: 2px;
 }

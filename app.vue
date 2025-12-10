@@ -35,6 +35,11 @@ useHead({
       // Load fonts asynchronously to prevent render blocking
       media: 'print',
     },
+    // Swiper CSS
+    {
+      rel: 'stylesheet',
+      href: 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css',
+    },
     // Sanity CDN - preconnect for faster image loading
     {
       rel: 'preconnect',
@@ -48,20 +53,22 @@ useHead({
   ],
   script: [
     {
-      children: `
+      innerHTML: `
         // Async font loading - change media from 'print' to 'all' when loaded
-        const fontLink = document.querySelector('link[href*="fonts.googleapis.com"]');
-        if (fontLink) {
-          fontLink.onload = function() {
-            this.media = 'all';
-          };
-          // Fallback for browsers that don't fire onload
-          setTimeout(function() {
-            if (fontLink.media === 'print') {
-              fontLink.media = 'all';
-            }
-          }, 100);
-        }
+        (function() {
+          const fontLink = document.querySelector('link[href*="fonts.googleapis.com"]');
+          if (fontLink) {
+            fontLink.onload = function() {
+              this.media = 'all';
+            };
+            // Fallback for browsers that don't fire onload
+            setTimeout(function() {
+              if (fontLink.media === 'print') {
+                fontLink.media = 'all';
+              }
+            }, 100);
+          }
+        })();
       `,
       type: 'text/javascript',
     },

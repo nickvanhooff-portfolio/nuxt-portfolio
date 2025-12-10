@@ -34,11 +34,11 @@
       </div>
     </article>
 
-    <!-- Horizontal Layout -->
-    <article
-      v-else
-      class="keen-slider__slide relative pt-6"
-    >
+        <!-- Horizontal Layout -->
+        <article
+          v-else
+          class="relative pt-6"
+        >
       <!-- Timeline dot with connecting line -->
       <div class="absolute top-12 left-0 right-0 flex items-center justify-center z-20">
         <div 
