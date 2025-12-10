@@ -27,6 +27,26 @@ export default defineNuxtConfig({
     compressPublicAssets: true,
     // Minify HTML output
     minify: true,
+    // Security headers via route rules
+    routeRules: {
+      '/**': {
+        headers: {
+          // X-Frame-Options (clickjacking protection)
+          'X-Frame-Options': 'DENY',
+          // Cross-Origin-Opener-Policy (COOP) for origin isolation
+          'Cross-Origin-Opener-Policy': 'same-origin',
+          // X-Content-Type-Options (prevent MIME type sniffing)
+          'X-Content-Type-Options': 'nosniff',
+          // Referrer Policy
+          'Referrer-Policy': 'strict-origin-when-cross-origin',
+          // Permissions Policy
+          // Note: geolocation=() blocks browser Geolocation API, NOT IP-based location tracking
+          // Analytics tools (PostHog, Google Analytics, etc.) use IP-based location, not the browser API
+          // So tracking will still work! This only blocks native browser geolocation requests.
+          'Permissions-Policy': 'geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=(), speaker=(), vibrate=(), fullscreen=(self), sync-xhr=()',
+        },
+      },
+    },
   },
   
   // Image optimization
