@@ -75,6 +75,7 @@ function getBlockId(block: SanityBlock, index: number): string {
     imageText: 'about',
     richText: 'text',
     contentImage: 'image',
+    experience: 'experience',
   }
   
   return idMap[block._type] || `${block._type}-${index}`

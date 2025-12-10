@@ -12,6 +12,7 @@
     "lint:fix": "eslint --fix ."
   },
   "dependencies": {
+    "@nuxt/hints": "^1.0.0-alpha.3",
     "@nuxt/image": "^1.11.0",
     "@nuxtjs/sanity": "^2.0.0",
     "@sanity/image-url": "^1.2.0",

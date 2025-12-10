@@ -2,7 +2,15 @@
 export default defineNuxtConfig({
   devtools: { enabled: false },
 
-  modules: ['@nuxt/eslint', '@nuxt/image', '@nuxtjs/sanity', '@nuxtjs/tailwindcss', '@tresjs/nuxt', 'nuxt-keen-slider'],
+  modules: [
+    '@nuxt/eslint',
+    '@nuxt/image',
+    '@nuxtjs/sanity',
+    '@nuxtjs/tailwindcss',
+    '@tresjs/nuxt',
+    'nuxt-keen-slider',
+    '@nuxt/hints'
+  ],
 
   css: ['~/assets/css/main.css'],
 
@@ -22,7 +30,7 @@ export default defineNuxtConfig({
     NOTIFICATION_EMAIL: process.env.NOTIFICATION_EMAIL,
     EMAIL_FROM: process.env.EMAIL_FROM || 'Portfolio Contact <noreply@yourdomain.com>',
     public: {
-      NUXT_PUBLIC_SANITY_PROJECT_ID: process.env.NUXT_PUBLIC_SANITY_PROJECT_ID || "i6f2j3l0",
+      NUXT_PUBLIC_SANITY_PROJECT_ID: process.env.NUXT_PUBLIC_SANITY_PROJECT_ID,
       NUXT_PUBLIC_SANITY_DATASET: process.env.NUXT_PUBLIC_SANITY_DATASET || "production",
     },
   },
