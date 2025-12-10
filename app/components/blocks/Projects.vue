@@ -141,6 +141,7 @@
                 <a
                   v-if="project.demoUrl"
                   :href="project.demoUrl"
+                  :aria-label="`View demo of ${project.title}`"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="project-link"

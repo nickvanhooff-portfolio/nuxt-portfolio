@@ -40,7 +40,8 @@
             v-for="link in navLinks"
             :key="link.path"
             :href="link.path === '/' ? '#' : `#${link.id}`"
-            class="group relative text-sm font-medium text-primary/70 transition-all duration-300 ease-out py-2 cursor-pointer"
+            :aria-current="isActiveRoute(link.path) ? 'page' : undefined"
+            class="group relative text-sm font-medium text-primary/70 transition-all duration-300 ease-out py-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded"
             :class="isActiveRoute(link.path) ? 'text-primary' : 'hover:text-primary'"
             @click.prevent="scrollToSection(link.id)"
           >
@@ -54,8 +55,9 @@
 
         <!-- Mobile Menu Button -->
         <button
-          class="md:hidden relative w-10 h-10 flex flex-col justify-center items-center bg-transparent border-none cursor-pointer z-50"
-          aria-label="Toggle menu"
+          class="md:hidden relative w-10 h-10 flex flex-col justify-center items-center bg-transparent border-none cursor-pointer z-50 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded"
+          :aria-label="isMobileMenuOpen ? 'Close menu' : 'Open menu'"
+          :aria-expanded="isMobileMenuOpen"
           @click="toggleMobileMenu"
         >
           <span
@@ -97,7 +99,8 @@
               v-for="link in navLinks"
               :key="link.path"
               :href="link.path === '/' ? '#' : `#${link.id}`"
-              class="px-6 py-4 text-base font-medium text-primary transition-colors duration-200 cursor-pointer"
+              :aria-current="isActiveRoute(link.path) ? 'page' : undefined"
+              class="px-6 py-4 text-base font-medium text-primary transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-inset"
               :class="isActiveRoute(link.path) ? 'bg-neutral-light text-accent border-l-3 border-accent' : 'border-l-3 border-transparent hover:bg-neutral-light hover:text-accent hover:border-accent'"
               @click.prevent="scrollToSection(link.id); closeMobileMenu()"
             >

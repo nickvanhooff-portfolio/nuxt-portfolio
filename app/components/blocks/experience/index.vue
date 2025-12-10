@@ -55,9 +55,9 @@
           <template v-else>
             <div class="relative py-12 md:py-16">
               <!-- Scroll hint text -->
-              <div class="absolute top-0 right-8 z-30 pointer-events-none hidden md:flex items-center gap-2 text-xs text-primary/60">
+              <div class="absolute top-0 right-8 z-30 pointer-events-none hidden md:flex items-center gap-2 text-xs text-primary/60" aria-hidden="true">
                 <span>Swipe to explore</span>
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
               </div>
@@ -100,10 +100,8 @@
                   v-for="(experience, index) in sortedExperiences"
                   :key="`dot-${index}`"
                   type="button"
-                  class="relative rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 cursor-pointer pointer-events-auto z-50"
+                  class="relative rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 cursor-pointer pointer-events-auto z-50 p-2"
                   :style="{ 
-                    minWidth: '8px',
-                    minHeight: '8px',
                     zIndex: 50 + index 
                   }"
                   :class="currentSlide === index 

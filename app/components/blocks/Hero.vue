@@ -13,7 +13,7 @@
     <div class="absolute inset-0 grid-pattern opacity-5" />
     
     <!-- Circuit/connection lines pattern -->
-    <svg class="circuit-pattern" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+    <svg class="circuit-pattern" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
       <defs>
         <linearGradient id="circuitGradient" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" style="stop-color:#6366f1;stop-opacity:0.1" />
@@ -45,6 +45,7 @@
         format="webp"
         loading="eager"
         fetchpriority="high"
+        aria-hidden="true"
       />
     </div>
     
@@ -87,7 +88,8 @@
         >
           <a 
             :href="block.ctaButton.url"
-            class="inline-flex items-center gap-1.5 px-8 py-4 bg-indigo-500/10 border border-indigo-500/30 rounded-lg font-mono text-sm md:text-base no-underline transition-all duration-300 ease-in-out backdrop-blur-sm hover:bg-indigo-500/20 hover:border-indigo-500 hover:-translate-y-0.5 hover:shadow-[0_10px_40px_rgba(99,102,241,0.3)] group"
+            :aria-label="`${block.ctaButton.text} - ${block.heading || 'Portfolio'}`"
+            class="inline-flex items-center gap-1.5 px-8 py-4 bg-indigo-500/10 border border-indigo-500/30 rounded-lg font-mono text-sm md:text-base no-underline transition-all duration-300 ease-in-out backdrop-blur-sm hover:bg-indigo-500/20 hover:border-indigo-500 hover:-translate-y-0.5 hover:shadow-[0_10px_40px_rgba(99,102,241,0.3)] focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 group"
           >
             <span class="text-[#c678dd]">explore</span>
             <span class="w-1.5" />
@@ -101,13 +103,13 @@
     </div>
     
     <!-- Floating code snippets -->
-    <div class="absolute top-[20%] right-[8%] font-mono text-[11px] py-1.5 px-3 bg-gray-900/60 border border-indigo-500/15 rounded-md opacity-50 backdrop-blur-sm z-[1]">
+    <div class="absolute top-[20%] right-[8%] font-mono text-[11px] py-1.5 px-3 bg-gray-900/60 border border-indigo-500/15 rounded-md opacity-50 backdrop-blur-sm z-[1]" aria-hidden="true">
       <span class="text-purple-400">function</span> <span class="text-cyan-400">learn</span>() { }
     </div>
-    <div class="absolute bottom-[30%] left-[8%] font-mono text-[11px] py-1.5 px-3 bg-gray-900/60 border border-indigo-500/15 rounded-md opacity-50 backdrop-blur-sm z-[1]">
+    <div class="absolute bottom-[30%] left-[8%] font-mono text-[11px] py-1.5 px-3 bg-gray-900/60 border border-indigo-500/15 rounded-md opacity-50 backdrop-blur-sm z-[1]" aria-hidden="true">
       <span class="text-green-400">// building</span> <span class="text-gray-400">amazing things</span>
     </div>
-    <div class="absolute top-[35%] left-[5%] font-mono text-[11px] py-1.5 px-3 bg-gray-900/60 border border-indigo-500/15 rounded-md opacity-50 backdrop-blur-sm z-[1]">
+    <div class="absolute top-[35%] left-[5%] font-mono text-[11px] py-1.5 px-3 bg-gray-900/60 border border-indigo-500/15 rounded-md opacity-50 backdrop-blur-sm z-[1]" aria-hidden="true">
       <span class="text-amber-400">let</span> <span class="text-cyan-400">passion</span> = <span class="text-pink-400">true</span>;
     </div>
 

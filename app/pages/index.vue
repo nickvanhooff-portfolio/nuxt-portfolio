@@ -1,5 +1,5 @@
 <template>
-  <main v-if="page" class="min-h-screen bg-neutral">
+  <main id="main-content" v-if="page" class="min-h-screen bg-neutral">
     <!-- Page Builder Blocks -->
     <PageBuilder
       v-if="page.pageBuilder && page.pageBuilder.length > 0"

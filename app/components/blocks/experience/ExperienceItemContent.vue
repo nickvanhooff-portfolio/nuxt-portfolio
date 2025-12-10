@@ -17,7 +17,7 @@
         </span>
         <span 
           v-if="experience.isCurrent || !experience.endDate"
-          class="text-xs px-2.5 py-1 rounded-full font-medium whitespace-nowrap bg-accent/10 text-accent border border-accent/20"
+          class="text-xs px-2.5 py-1 rounded-full font-medium whitespace-nowrap bg-accent/15 text-accent-dark border border-accent/30"
         >
           Current
         </span>
@@ -35,7 +35,7 @@
       </span>
       <span 
         v-if="experience.isCurrent || !experience.endDate"
-        class="text-xs px-3 py-1.5 rounded-full font-medium whitespace-nowrap bg-accent/10 text-accent border border-accent/20"
+        class="text-xs px-3 py-1.5 rounded-full font-medium whitespace-nowrap bg-accent/15 text-accent-dark border border-accent/30"
       >
         Current
       </span>
