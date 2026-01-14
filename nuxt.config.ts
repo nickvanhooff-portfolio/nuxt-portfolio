@@ -13,7 +13,8 @@ export default defineNuxtConfig({
     '@nuxtjs/sanity',
     '@nuxtjs/tailwindcss',
     '@tresjs/nuxt',
-    '@nuxt/hints'
+    '@nuxt/hints',
+    'nuxt-security'
   ],
 
   css: ['~/assets/css/main.css'],
@@ -29,33 +30,49 @@ export default defineNuxtConfig({
     },
   },
   
+  // Security configuration via nuxt-security module
+  // Most headers are enabled by default, only CSP needs custom configuration
+  security: {
+    headers: {
+      // Content Security Policy - only configure what you actually use
+      contentSecurityPolicy: {
+        'default-src': ["'self'"],
+        'script-src': [
+          "'self'",
+          "'unsafe-inline'", // Required for Nuxt
+          ...(process.dev ? ["'unsafe-eval'"] : []), // Only in dev for HMR
+          'https://cdn.sanity.io', // Sanity CDN
+        ],
+        'style-src': [
+          "'self'",
+          "'unsafe-inline'", // Required for Nuxt
+          'https://fonts.googleapis.com', // Google Fonts
+        ],
+        'img-src': [
+          "'self'",
+          'data:',
+          'https://cdn.sanity.io', // Sanity CDN (handles both cdn.sanity.io and *.apicdn.sanity.io)
+        ],
+        'font-src': [
+          "'self'",
+          'https://fonts.gstatic.com', // Google Fonts
+          'data:',
+        ],
+        'connect-src': [
+          "'self'",
+          'https://cdn.sanity.io', // Sanity CDN
+          'https://*.apicdn.sanity.io', // Sanity API (project-specific subdomain)
+        ],
+      },
+    },
+  },
+
   // Performance optimizations
   nitro: {
     // Enable compression (gzip/brotli) for production
     compressPublicAssets: true,
     // Minify HTML output
     minify: true,
-    // Security headers via route rules
-    routeRules: {
-      '/**': {
-        headers: {
-          // X-Frame-Options (clickjacking protection)
-          'X-Frame-Options': 'DENY',
-          // Cross-Origin-Opener-Policy (COOP) for origin isolation
-          'Cross-Origin-Opener-Policy': 'same-origin',
-          // X-Content-Type-Options (prevent MIME type sniffing)
-          'X-Content-Type-Options': 'nosniff',
-          // Referrer Policy
-          'Referrer-Policy': 'strict-origin-when-cross-origin',
-          // Permissions Policy
-          // Note: geolocation=() blocks browser Geolocation API, NOT IP-based location tracking
-          // Analytics tools (PostHog, Google Analytics, etc.) use IP-based location, not the browser API
-          // So tracking will still work! This only blocks native browser geolocation requests.
-          // Removed 'speaker' and 'vibrate' as they are deprecated/not recognized by browsers
-          'Permissions-Policy': 'geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=(), fullscreen=(self), sync-xhr=()',
-        },
-      },
-    },
   },
   
   // Image optimization

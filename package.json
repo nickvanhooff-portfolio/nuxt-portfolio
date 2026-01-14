@@ -20,6 +20,7 @@
     "@types/three": "^0.181.0",
     "groq": "^4.8.1",
     "nuxt": "^4.1.1",
+    "nuxt-security": "^2.5.0",
     "resend": "^6.5.2",
     "swiper": "^12.0.3",
     "three": "^0.181.2"
