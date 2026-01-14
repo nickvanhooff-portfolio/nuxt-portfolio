@@ -240,20 +240,21 @@ const initializeSwiperAsync = async () => {
     const Swiper = SwiperModule.Swiper || SwiperModule.default
     const FreeMode = ModulesModule.FreeMode || ModulesModule.default?.FreeMode
     const Pagination = ModulesModule.Pagination || ModulesModule.default?.Pagination
+    const Mousewheel = ModulesModule.Mousewheel || ModulesModule.default?.Mousewheel
     
     if (!Swiper) {
       console.warn('Swiper module not loaded')
       return
     }
     
-    initializeSwiper(Swiper, FreeMode, Pagination)
+    initializeSwiper(Swiper, FreeMode, Pagination, Mousewheel)
   } catch (error) {
     console.warn('Failed to initialize Swiper:', error)
   }
 }
 
 // Helper function to initialize Swiper
-const initializeSwiper = (Swiper: any, FreeMode: any, Pagination: any) => {
+const initializeSwiper = (Swiper: any, FreeMode: any, Pagination: any, Mousewheel: any) => {
   // Ensure container is a valid DOM node
   if (!container.value || !(container.value instanceof HTMLElement) || !Swiper) {
     console.warn('Cannot initialize Swiper: invalid container or Swiper instance')
@@ -263,7 +264,7 @@ const initializeSwiper = (Swiper: any, FreeMode: any, Pagination: any) => {
   try {
     // Initialize Swiper with proper configuration for horizontal scrolling
     slider.value = new Swiper(container.value, {
-      modules: [FreeMode, Pagination].filter(Boolean),
+      modules: [FreeMode, Pagination, Mousewheel].filter(Boolean),
       slidesPerView: 'auto', // Let Swiper calculate based on slide width
       spaceBetween: 20,
       freeMode: FreeMode ? {
@@ -273,6 +274,13 @@ const initializeSwiper = (Swiper: any, FreeMode: any, Pagination: any) => {
         momentumRatio: 0.5,
         momentumBounce: true,
         momentumBounceRatio: 0.5,
+      } : false,
+      mousewheel: Mousewheel ? {
+        enabled: true,
+        forceToAxis: true, // Only scroll horizontally
+        sensitivity: 1,
+        releaseOnEdges: false,
+        eventsTarget: 'container', // Listen to wheel events on the container
       } : false,
       pagination: Pagination && hasExperiences.value ? {
         el: container.value.querySelector('.swiper-pagination') || undefined,
