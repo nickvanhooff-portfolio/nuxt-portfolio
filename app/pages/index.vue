@@ -49,9 +49,9 @@
 
 <script setup lang="ts">
 import type { SanityDocument } from '@sanity/client'
-import { createClient } from '@sanity/client'
 import groq from 'groq'
 import { useSeo } from '~/composables/useSeoMeta'
+import { createSanityClient } from '~/utils/sanity'
 
 // Query for home page (slug: "home")
 const HOME_PAGE_QUERY = groq`*[_type == "page" && slug.current == "home"][0] {
@@ -93,13 +93,7 @@ const HOME_PAGE_QUERY = groq`*[_type == "page" && slug.current == "home"][0] {
   }
 }`
 
-const runtime = useRuntimeConfig()
-const client = createClient({
-  projectId: String(runtime.public.NUXT_PUBLIC_SANITY_PROJECT_ID || ''),
-  dataset: String(runtime.public.NUXT_PUBLIC_SANITY_DATASET || 'production'),
-  apiVersion: '2025-07-16',
-  useCdn: true
-})
+const client = createSanityClient()
 
 const { data: page, pending, error } = await useAsyncData<SanityDocument>(
   'home-page',

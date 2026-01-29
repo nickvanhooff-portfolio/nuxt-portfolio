@@ -231,10 +231,10 @@
 
 <script setup lang="ts">
 import type { SanityDocument } from '@sanity/client'
-import { createClient } from '@sanity/client'
 import groq from 'groq'
 import PageBuilder from '~/components/PageBuilder.vue'
 import { useSeo } from '~/composables/useSeoMeta'
+import { createSanityClient } from '~/utils/sanity'
 
 const PROJECT_QUERY = groq`*[_type == "project" && slug.current == $slug][0] {
   _id,
@@ -296,13 +296,7 @@ const PROJECT_QUERY = groq`*[_type == "project" && slug.current == $slug][0] {
 
 const { params } = useRoute()
 
-const runtime = useRuntimeConfig()
-const client = createClient({
-  projectId: String(runtime.public.NUXT_PUBLIC_SANITY_PROJECT_ID || ''),
-  dataset: String(runtime.public.NUXT_PUBLIC_SANITY_DATASET || 'production'),
-  apiVersion: '2025-07-16',
-  useCdn: true
-})
+const client = createSanityClient()
 
 const { data: project } = await useAsyncData<SanityDocument>(
   () => `project-${params.slug}`,

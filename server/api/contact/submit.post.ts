@@ -1,4 +1,4 @@
-import { createClient } from '@sanity/client'
+import { createSanityWriteClient } from '~/utils/sanity'
 
 export default defineEventHandler(async (event) => {
   // Only allow POST requests
@@ -31,30 +31,9 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Get Sanity configuration from runtime config
-    const config = useRuntimeConfig()
-    const projectId = config.public.NUXT_PUBLIC_SANITY_PROJECT_ID
-    const dataset = config.public.NUXT_PUBLIC_SANITY_DATASET || 'production'
-    
-    // IMPORTANT: Use write token from server-side only (not public)
-    // This should be set in your .env file as SANITY_WRITE_TOKEN
-    const token = config.SANITY_WRITE_TOKEN
-
-    if (!token) {
-      throw createError({
-        statusCode: 500,
-        message: 'Server configuration error: Sanity write token not configured',
-      })
-    }
-
     // Create Sanity client with write permissions
-    const client = createClient({
-      projectId,
-      dataset,
-      apiVersion: '2025-07-16',
-      token,
-      useCdn: false, // Don't use CDN for writes
-    })
+    // This uses the centralized client utility which handles configuration
+    const client = createSanityWriteClient()
 
     // Create form submission document in Sanity
     const submission = await client.create({
@@ -67,6 +46,7 @@ export default defineEventHandler(async (event) => {
     })
 
     // Send email notification (optional, only if configured)
+    const config = useRuntimeConfig()
     const notificationEmail = config.NOTIFICATION_EMAIL
     const resendApiKey = config.RESEND_API_KEY
 
@@ -90,7 +70,7 @@ export default defineEventHandler(async (event) => {
             <p><strong>Submitted:</strong> ${new Date().toLocaleString('nl-NL')}</p>
             <hr>
             <h3>Message:</h3>
-            <p>${message.replace(/\n/g, '<br>')}</p>
+            <p>${message.replaceAll('\n', '<br>')}</p>
             <hr>
             <p><small>This submission has been saved to Sanity with ID: ${submission._id}</small></p>
           `,

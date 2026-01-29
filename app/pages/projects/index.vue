@@ -115,10 +115,10 @@
 
 <script setup lang="ts">
 import type { SanityDocument } from '@sanity/client'
-import { createClient } from '@sanity/client'
 import groq from 'groq'
 import UiTechBadge from '~/components/ui/TechBadge.vue'
 import { useSeo } from '~/composables/useSeoMeta'
+import { createSanityClient } from '~/utils/sanity'
 
 const PROJECTS_QUERY = groq`*[_type == "project" && defined(slug.current)]|order(_createdAt desc){
   _id,
@@ -137,13 +137,7 @@ const PROJECTS_QUERY = groq`*[_type == "project" && defined(slug.current)]|order
   status
 }`
 
-const runtime = useRuntimeConfig()
-const client = createClient({
-  projectId: String(runtime.public.NUXT_PUBLIC_SANITY_PROJECT_ID || ''),
-  dataset: String(runtime.public.NUXT_PUBLIC_SANITY_DATASET || 'production'),
-  apiVersion: '2025-07-16',
-  useCdn: true
-})
+const client = createSanityClient()
 
 const { data: projects, pending, error } = await useAsyncData<SanityDocument[]>(
   'all-projects',
