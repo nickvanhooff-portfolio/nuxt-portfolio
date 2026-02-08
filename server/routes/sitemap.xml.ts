@@ -3,7 +3,7 @@ import groq from 'groq'
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
-  const siteUrl = config.public.siteUrl || 'https://nickvanhooff.com'
+  const siteUrl = config.public.siteUrl || 'https://www.nickvanhooff.com'
   
   // Initialize Sanity client
   const client = createClient({

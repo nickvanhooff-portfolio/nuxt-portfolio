@@ -131,12 +131,12 @@ export default defineNuxtConfig({
     // Email configuration (optional)
     RESEND_API_KEY: process.env.RESEND_API_KEY,
     NOTIFICATION_EMAIL: process.env.NOTIFICATION_EMAIL,
-    EMAIL_FROM: process.env.EMAIL_FROM || 'Portfolio Contact <noreply@yourdomain.com>',
+    EMAIL_FROM: process.env.EMAIL_FROM || 'contact@nickvanhooff.com',
     public: {
       NUXT_PUBLIC_SANITY_PROJECT_ID: process.env.NUXT_PUBLIC_SANITY_PROJECT_ID,
       NUXT_PUBLIC_SANITY_DATASET: process.env.NUXT_PUBLIC_SANITY_DATASET || "production",
       // Site URL for SEO (canonical URLs, Open Graph, etc.)
-      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://yourdomain.com',
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://www.nickvanhooff.com',
     },
   },
   // Disable Sanity module to avoid React runtime conflicts

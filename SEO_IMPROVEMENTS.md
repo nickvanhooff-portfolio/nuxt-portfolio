@@ -115,7 +115,7 @@ Test your structured data:
 ### 7. **Environment Variables**
 Make sure these are set in your production environment:
 ```env
-NUXT_PUBLIC_SITE_URL=https://yourdomain.com
+NUXT_PUBLIC_SITE_URL=https://www.nickvanhooff.com
 NUXT_PUBLIC_SANITY_PROJECT_ID=your-project-id
 NUXT_PUBLIC_SANITY_DATASET=production
 ```
@@ -160,4 +160,5 @@ With these improvements, you should see:
 - Sitemap is dynamically generated from Sanity content
 - Structured data helps with rich snippets in search results
 - Error pages are SEO-friendly
+
 
