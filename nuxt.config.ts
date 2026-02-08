@@ -21,12 +21,26 @@ export default defineNuxtConfig({
 
   compatibilityDate: '2025-07-16',
   
+  // SSR is enabled by default in Nuxt 4, but explicitly set for clarity
+  ssr: true,
+  
   // HTML attributes - set lang attribute for accessibility
   app: {
     head: {
       htmlAttrs: {
         lang: 'nl',
       },
+      // Default meta tags for SEO
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { name: 'format-detection', content: 'telephone=no' },
+        { name: 'theme-color', content: '#000000' }, // Update with your brand color
+      ],
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' }, // Add this icon
+      ],
     },
   },
   

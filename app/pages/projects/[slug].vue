@@ -231,10 +231,11 @@
 
 <script setup lang="ts">
 import type { SanityDocument } from '@sanity/client'
+import { createClient } from '@sanity/client'
 import groq from 'groq'
 import PageBuilder from '~/components/PageBuilder.vue'
 import { useSeo } from '~/composables/useSeoMeta'
-import { createSanityClient } from '~/utils/sanity'
+import { useBreadcrumbSchema } from '~/composables/useStructuredData'
 
 const PROJECT_QUERY = groq`*[_type == "project" && slug.current == $slug][0] {
   _id,
@@ -296,7 +297,13 @@ const PROJECT_QUERY = groq`*[_type == "project" && slug.current == $slug][0] {
 
 const { params } = useRoute()
 
-const client = createSanityClient()
+const runtime = useRuntimeConfig()
+const client = createClient({
+  projectId: String(runtime.public.NUXT_PUBLIC_SANITY_PROJECT_ID || ''),
+  dataset: String(runtime.public.NUXT_PUBLIC_SANITY_DATASET || 'production'),
+  apiVersion: '2025-07-16',
+  useCdn: true
+})
 
 const { data: project } = await useAsyncData<SanityDocument>(
   () => `project-${params.slug}`,
@@ -325,22 +332,36 @@ useSeo({
 })
 
 // Structured data (JSON-LD) for Project
+// Breadcrumb schema
+const breadcrumbSchema = useBreadcrumbSchema([
+  { name: 'Home', url: '/' },
+  { name: 'Projects', url: '/projects' },
+  { name: project.value?.title || 'Project', url: route.path },
+])
+
+// CreativeWork schema for project
+const projectSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CreativeWork',
+  name: project.value?.title,
+  description: project.value?.description,
+  url: `${siteUrl}${route.path}`,
+  ...(ogImage && { image: ogImage }),
+  ...(project.value?.githubUrl && { codeRepository: project.value.githubUrl }),
+  ...(project.value?.demoUrl && { url: project.value.demoUrl }),
+  ...(project.value?.startDate && { dateCreated: project.value.startDate }),
+  ...(project.value?.endDate && { datePublished: project.value.endDate }),
+}
+
 useHead({
   script: [
     {
       type: 'application/ld+json',
-      children: JSON.stringify({
-        '@context': 'https://schema.org',
-        '@type': 'CreativeWork',
-        name: project.value?.title,
-        description: project.value?.description,
-        url: `${siteUrl}${route.path}`,
-        ...(ogImage && { image: ogImage }),
-        ...(project.value?.githubUrl && { codeRepository: project.value.githubUrl }),
-        ...(project.value?.demoUrl && { url: project.value.demoUrl }),
-        ...(project.value?.startDate && { dateCreated: project.value.startDate }),
-        ...(project.value?.endDate && { datePublished: project.value.endDate }),
-      }),
+      children: JSON.stringify(projectSchema),
+    },
+    {
+      type: 'application/ld+json',
+      children: JSON.stringify(breadcrumbSchema),
     },
   ],
 })

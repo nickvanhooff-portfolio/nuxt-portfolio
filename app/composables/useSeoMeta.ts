@@ -22,8 +22,9 @@ export const useSeo = (options: {
   const type = options.type || 'website'
   
   // Use featured image or OG image, fallback to default
+  // Ensure we always have an absolute URL for OG images
   const ogImage = options.image || `${siteUrl}/og-default.jpg`
-  const absoluteImageUrl = ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}`
+  const absoluteImageUrl = ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage.startsWith('/') ? ogImage : '/' + ogImage}`
   
   // Build meta tags
   const meta = [

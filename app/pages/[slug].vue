@@ -39,9 +39,10 @@
 
 <script setup lang="ts">
 import type { SanityDocument } from '@sanity/client'
+import { createClient } from '@sanity/client'
 import groq from 'groq'
 import { useSeo } from '~/composables/useSeoMeta'
-import { createSanityClient } from '~/utils/sanity'
+import { useBreadcrumbSchema } from '~/composables/useStructuredData'
 
 const PAGE_QUERY = groq`*[_type == "page" && slug.current == $slug][0] {
   _id,
@@ -83,7 +84,13 @@ const PAGE_QUERY = groq`*[_type == "page" && slug.current == $slug][0] {
 }`
 const { params } = useRoute()
 
-const client = createSanityClient()
+const runtime = useRuntimeConfig()
+const client = createClient({
+  projectId: String(runtime.public.NUXT_PUBLIC_SANITY_PROJECT_ID || ''),
+  dataset: String(runtime.public.NUXT_PUBLIC_SANITY_DATASET || 'production'),
+  apiVersion: '2025-07-16',
+  useCdn: true
+})
 
 const { data: page } = await useAsyncData<SanityDocument>(
   () => `page-${params.slug}`,
@@ -109,18 +116,31 @@ useSeo({
 })
 
 // Structured data (JSON-LD)
+// Breadcrumb schema
+const breadcrumbSchema = useBreadcrumbSchema([
+  { name: 'Home', url: '/' },
+  { name: page.value?.title || 'Page', url: route.path },
+])
+
+// WebPage schema
+const webpageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: page.value?.title || 'Page',
+  description: page.value?.metaDescription || '',
+  url: `${siteUrl}${route.path}`,
+  ...(ogImage && { image: ogImage }),
+}
+
 useHead({
   script: [
     {
       type: 'application/ld+json',
-      children: JSON.stringify({
-        '@context': 'https://schema.org',
-        '@type': 'WebPage',
-        name: page.value?.title || 'Page',
-        description: page.value?.metaDescription || '',
-        url: `${siteUrl}${route.path}`,
-        ...(ogImage && { image: ogImage }),
-      }),
+      children: JSON.stringify(webpageSchema),
+    },
+    {
+      type: 'application/ld+json',
+      children: JSON.stringify(breadcrumbSchema),
     },
   ],
 })

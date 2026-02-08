@@ -49,9 +49,10 @@
 
 <script setup lang="ts">
 import type { SanityDocument } from '@sanity/client'
+import { createClient } from '@sanity/client'
 import groq from 'groq'
 import { useSeo } from '~/composables/useSeoMeta'
-import { createSanityClient } from '~/utils/sanity'
+import { usePersonSchema, useOrganizationSchema } from '~/composables/useStructuredData'
 
 // Query for home page (slug: "home")
 const HOME_PAGE_QUERY = groq`*[_type == "page" && slug.current == "home"][0] {
@@ -93,7 +94,13 @@ const HOME_PAGE_QUERY = groq`*[_type == "page" && slug.current == "home"][0] {
   }
 }`
 
-const client = createSanityClient()
+const runtime = useRuntimeConfig()
+const client = createClient({
+  projectId: String(runtime.public.NUXT_PUBLIC_SANITY_PROJECT_ID || ''),
+  dataset: String(runtime.public.NUXT_PUBLIC_SANITY_DATASET || 'production'),
+  apiVersion: '2025-07-16',
+  useCdn: true
+})
 
 const { data: page, pending, error } = await useAsyncData<SanityDocument>(
   'home-page',
@@ -121,18 +128,52 @@ useSeo({
 })
 
 // Structured data (JSON-LD)
+// Person schema for portfolio owner (update with your actual information)
+const personSchema = usePersonSchema({
+  name: 'Nick van Hooff', // Update with your name
+  jobTitle: 'Web Developer', // Update with your job title
+  url: siteUrl,
+  // image: `${siteUrl}/profile-image.jpg`, // Add your profile image
+  // sameAs: [ // Add your social media profiles
+  //   'https://github.com/yourusername',
+  //   'https://linkedin.com/in/yourusername',
+  //   'https://twitter.com/yourusername',
+  // ],
+  // email: 'your.email@example.com', // Optional
+})
+
+// Organization schema (optional, for portfolio as organization)
+const organizationSchema = useOrganizationSchema({
+  name: page.value?.title || 'Portfolio',
+  url: siteUrl,
+  description: page.value?.metaDescription || 'Portfolio website',
+  // logo: `${siteUrl}/logo.png`, // Add your logo
+  // sameAs: [], // Add organization social profiles if any
+})
+
+// WebSite schema
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: page.value?.title || 'Portfolio',
+  description: page.value?.metaDescription || 'Portfolio website',
+  url: siteUrl,
+  ...(ogImage && { image: ogImage }),
+}
+
 useHead({
   script: [
     {
       type: 'application/ld+json',
-      children: JSON.stringify({
-        '@context': 'https://schema.org',
-        '@type': 'WebSite',
-        name: page.value?.title || 'Portfolio',
-        description: page.value?.metaDescription || 'Portfolio website',
-        url: `${siteUrl}${route.path}`,
-        ...(ogImage && { image: ogImage }),
-      }),
+      children: JSON.stringify(websiteSchema),
+    },
+    {
+      type: 'application/ld+json',
+      children: JSON.stringify(personSchema),
+    },
+    {
+      type: 'application/ld+json',
+      children: JSON.stringify(organizationSchema),
     },
   ],
 })
