@@ -1,9 +1,28 @@
+# robots.txt for nickvanhooff.com
+# Optimized for better crawlability and SEO
+
+# Allow all search engines to crawl the site
 User-agent: *
 Allow: /
 
-# Disallow admin/private routes if any
-# Disallow: /admin/
+# Disallow API endpoints (not meant for indexing)
+Disallow: /api/
 
-# Sitemap
-Sitemap: https://nickvanhooff.com/sitemap.xml
+# Disallow any admin or private routes
+Disallow: /admin/
+Disallow: /_nuxt/
+
+# Allow important assets and resources
+Allow: /favicon.ico
+Allow: /robots.txt
+Allow: /sitemap.xml
+
+# Crawl-delay (optional - only if you experience crawl issues)
+# Most sites don't need this, but can help with server load
+# User-agent: *
+# Crawl-delay: 1
+
+# Sitemap location
+# Update this URL if your domain changes
+Sitemap: https://www.nickvanhooff.com/sitemap.xml
 
