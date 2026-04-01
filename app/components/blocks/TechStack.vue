@@ -80,11 +80,11 @@
               >
                 <!-- Glow effect -->
                 <div class="tech-item-glow" />
-                
+
                 <!-- Content -->
                 <div class="tech-item-content">
-                  <div 
-                    v-if="item.icon" 
+                  <div
+                    v-if="item.icon"
                     class="tech-item-icon"
                   >
                     <NuxtImg
@@ -109,11 +109,62 @@
         </div>
         
         <!-- Empty state -->
-        <div 
-          v-else 
+        <div
+          v-else
           class="text-center py-16 animate-fade-in-up"
         >
           <p class="text-primary/60">No tech stack items configured.</p>
+        </div>
+
+        <!-- Currently Exploring -->
+        <div
+          v-if="learningItems.length > 0"
+          class="exploring-section animate-fade-in-up"
+          :style="{ animationDelay: '0.4s' }"
+        >
+          <div class="exploring-header">
+            <span class="exploring-pulse">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-40" />
+              <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-accent" />
+            </span>
+            <h3 class="text-base font-semibold tracking-wide" :class="block.backgroundColor === 'primary' ? 'text-neutral/80' : 'text-primary/70'">
+              Currently Exploring
+            </h3>
+          </div>
+
+          <div class="flex flex-wrap gap-3">
+            <component
+              :is="item.url ? 'a' : 'div'"
+              v-for="item in learningItems"
+              :key="item._id"
+              :href="item.url"
+              :target="item.url ? '_blank' : undefined"
+              :rel="item.url ? 'noopener noreferrer' : undefined"
+              class="tech-item-card exploring-item"
+              :class="item.url ? 'cursor-pointer' : 'cursor-default'"
+              @mouseenter="handleMouseEnter"
+              @mousemove="handleMouseMove($event, 0)"
+              @mouseleave="handleMouseLeave"
+            >
+              <div class="tech-item-glow" />
+              <div class="tech-item-content">
+                <div v-if="item.icon" class="tech-item-icon">
+                  <NuxtImg
+                    :src="urlFor(item.icon).width(32).height(32).url()"
+                    :alt="`${item.name} icon`"
+                    class="w-8 h-8 object-contain"
+                    sizes="32px"
+                    width="32"
+                    height="32"
+                    format="webp"
+                    loading="lazy"
+                  />
+                </div>
+                <span class="tech-item-name">{{ item.name }}</span>
+              </div>
+              <div class="tech-item-shine" />
+            </component>
+          </div>
         </div>
       </div>
     </div>
@@ -161,7 +212,8 @@ onMounted(async () => {
         name,
         icon,
         category,
-        url
+        url,
+        isLearning
       }`
       
       const items = await client.fetch<TechItem[]>(query)
@@ -191,9 +243,9 @@ const groupedCategories = computed(() => {
     return []
   }
 
-  // Filter out references that weren't expanded (shouldn't happen, but safety check)
-  const items = itemsToUse.filter((item): item is TechItem => 
-    typeof item === 'object' && '_id' in item && 'category' in item
+  // Filter out references that weren't expanded, and exclude learning items (shown separately)
+  const items = itemsToUse.filter((item): item is TechItem =>
+    typeof item === 'object' && '_id' in item && 'category' in item && !item.isLearning
   ) as TechItem[]
 
   // Group by category
@@ -220,6 +272,17 @@ const groupedCategories = computed(() => {
   }
 
   return result
+})
+
+// Items currently being learned — shown in the "Currently Exploring" section
+const learningItems = computed(() => {
+  const itemsToUse = props.block.showAllCategories
+    ? allTechItems.value
+    : (props.block.techItems || [])
+
+  return itemsToUse.filter((item): item is TechItem =>
+    typeof item === 'object' && '_id' in item && Boolean(item.isLearning)
+  ).sort((a, b) => a.name.localeCompare(b.name))
 })
 
 const layoutClass = computed(() => {
@@ -470,5 +533,35 @@ const handleMouseLeave = (event: MouseEvent) => {
   .tech-item-name {
     @apply text-xs;
   }
+}
+
+/* Currently Exploring section */
+.exploring-section {
+  @apply mt-10 pt-8;
+  border-top: 1px dashed rgba(0, 102, 255, 0.2);
+  opacity: 0;
+  animation: fade-in-up 0.8s ease-out forwards;
+}
+
+.exploring-header {
+  @apply flex items-center gap-2.5 mb-5;
+}
+
+.exploring-pulse {
+  @apply relative flex h-2.5 w-2.5 flex-shrink-0;
+}
+
+.exploring-item .tech-item-content {
+  border-color: rgba(0, 102, 255, 0.15);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.97) 0%, rgba(240, 248, 255, 0.93) 100%);
+}
+
+.bg-primary .exploring-section {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+.bg-primary .exploring-item .tech-item-content {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(0, 102, 255, 0.08) 100%);
+  border-color: rgba(0, 102, 255, 0.3);
 }
 </style>

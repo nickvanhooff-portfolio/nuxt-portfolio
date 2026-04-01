@@ -12,6 +12,7 @@ export default {
   theme: {
     extend: {
       colors: {
+        navy: '#1a365d',
         primary: {
           DEFAULT: '#0E0E0E',
           light: '#1A1A1A',

@@ -72,6 +72,7 @@ export interface TechItem {
   icon?: SanityImageAsset
   category: 'languages' | 'frameworks' | 'tools'
   url?: string
+  isLearning?: boolean
 }
 
 export interface TechStack extends SanityBlock {

@@ -37,7 +37,7 @@
         
         <!-- Content Grid -->
         <div 
-          class="grid gap-8 md:gap-12"
+          class="grid gap-10 md:gap-12"
           :class="layoutClass"
         >
           <!-- Contact Form Card -->

@@ -37,18 +37,32 @@
           :class="block.layout === 'horizontal' ? 'py-8 md:py-8' : ''"
         >
           <!-- Vertical Timeline -->
-          <div v-if="block.layout === 'vertical' || !block.layout">
-            <div class="absolute left-4 md:left-1/2 md:-translate-x-1/2 top-0 bottom-0 w-[3px] bg-neutral-gray z-0" />
-            <div class="space-y-16 md:space-y-20">
-              <ExperienceItem
-                v-for="(experience, index) in sortedExperiences"
-                :key="`vertical-${index}`"
-                :experience="experience"
-                :index="index"
-                :background-color="block.backgroundColor"
-                :layout="block.layout"
-              />
+          <div v-if="block.layout === 'vertical' || !block.layout" class="relative">
+            <!-- Scrollable container showing ~3.2 items -->
+            <div
+              ref="verticalScrollContainer"
+              class="overflow-y-auto"
+              :style="{ maxHeight: verticalMaxHeight, scrollbarWidth: 'none', msOverflowStyle: 'none' }"
+            >
+              <div class="relative">
+                <div class="absolute left-4 md:left-1/2 md:-translate-x-1/2 top-0 bottom-0 w-[3px] bg-neutral-gray z-0" />
+                <div class="space-y-16 md:space-y-20 pb-16">
+                  <ExperienceItem
+                    v-for="(experience, index) in sortedExperiences"
+                    :key="`vertical-${index}`"
+                    :experience="experience"
+                    :index="index"
+                    :background-color="block.backgroundColor"
+                    :layout="block.layout"
+                  />
+                </div>
+              </div>
             </div>
+            <!-- Gradient fade indicating more content -->
+            <div
+              class="absolute bottom-0 left-0 right-0 h-28 pointer-events-none z-10"
+              :style="`background: linear-gradient(to top, ${gradientFromColor} 10%, transparent 100%)`"
+            />
           </div>
 
           <!-- Horizontal Timeline with Swiper -->
@@ -192,6 +206,14 @@ const backgroundColorClass = computed(() => {
   }
 })
 
+const gradientFromColor = computed(() => {
+  switch (props.block.backgroundColor) {
+    case 'gray': return '#F7F7F7'
+    case 'primary': return '#0E0E0E'
+    default: return '#FFFFFF'
+  }
+})
+
 // Initialize Keen Slider directly in the component
 // Only enable if layout is horizontal AND there are experiences
 const isHorizontalLayout = computed(() => props.block.layout === 'horizontal')
@@ -201,8 +223,34 @@ const container = ref<HTMLElement | null>(null)
 const slider = ref<any>(null)
 const currentSlide = ref(0)
 
+// Vertical scroll container height (dynamically calculated to show ~3.2 items)
+const verticalScrollContainer = ref<HTMLElement | null>(null)
+const verticalMaxHeight = ref('none')
+
+const calculateVerticalHeight = () => {
+  if (!verticalScrollContainer.value) return
+
+  const articles = verticalScrollContainer.value.querySelectorAll('article')
+  if (articles.length <= 3) return
+
+  const containerRect = verticalScrollContainer.value.getBoundingClientRect()
+  const fourthArticle = articles[3] as HTMLElement
+  const fourthRect = fourthArticle.getBoundingClientRect()
+
+  // Distance from container top to 25% into the 4th article
+  const peekHeight = (fourthRect.top - containerRect.top) + (fourthRect.height * 0.25)
+  verticalMaxHeight.value = `${Math.round(peekHeight)}px`
+}
+
 // Initialize Swiper on mount
 onMounted(async () => {
+  // Calculate vertical scroll height after render
+  if (!import.meta.server && !isHorizontalLayout.value && hasExperiences.value) {
+    await nextTick()
+    await nextTick()
+    calculateVerticalHeight()
+  }
+
   if (process.server || !isHorizontalLayout.value || !hasExperiences.value) return
   
   // Wait for ClientOnly to render and container to be available
