@@ -38,10 +38,8 @@
       <NuxtImg
         :src="urlFor(block.backgroundImage).width(1280).height(720).url()"
         :alt="block.heading || 'Hero background'"
-        class="w-full h-full object-cover opacity-10"
-        sizes="100vw"
-        width="1280"
-        height="720"
+        class="opacity-[0.15] md:opacity-10"
+        style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center;"
         format="webp"
         :quality="60"
         loading="eager"

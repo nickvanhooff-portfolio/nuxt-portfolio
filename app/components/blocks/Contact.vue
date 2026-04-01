@@ -350,13 +350,13 @@ const layoutClass = computed(() => {
   
   switch (props.block.layout) {
     case 'form-right':
-      return 'md:grid-cols-[1fr,1fr]'
+      return 'grid-cols-1 md:grid-cols-[1fr,1fr]'
     case 'form-only':
       return 'grid-cols-1 max-w-2xl mx-auto'
     case 'info-only':
       return 'grid-cols-1 max-w-2xl mx-auto'
     default: // form-left
-      return 'md:grid-cols-[1fr,1fr]'
+      return 'grid-cols-1 md:grid-cols-[1fr,1fr]'
   }
 })
 
