@@ -104,13 +104,13 @@
     </div>
     
     <!-- Floating code snippets -->
-    <div class="absolute top-[20%] right-[8%] font-mono text-[11px] py-1.5 px-3 bg-gray-900/60 border border-indigo-500/15 rounded-md opacity-50 backdrop-blur-sm z-[1]" aria-hidden="true">
+    <div class="hidden md:block absolute top-[20%] right-[8%] font-mono text-[11px] py-1.5 px-3 bg-gray-900/60 border border-indigo-500/15 rounded-md opacity-50 backdrop-blur-sm z-[1]" aria-hidden="true">
       <span class="text-purple-400">function</span> <span class="text-cyan-400">learn</span>() { }
     </div>
-    <div class="absolute bottom-[30%] left-[8%] font-mono text-[11px] py-1.5 px-3 bg-gray-900/60 border border-indigo-500/15 rounded-md opacity-50 backdrop-blur-sm z-[1]" aria-hidden="true">
+    <div class="hidden md:block absolute bottom-[30%] left-[8%] font-mono text-[11px] py-1.5 px-3 bg-gray-900/60 border border-indigo-500/15 rounded-md opacity-50 backdrop-blur-sm z-[1]" aria-hidden="true">
       <span class="text-green-400">// building</span> <span class="text-gray-400">amazing things</span>
     </div>
-    <div class="absolute top-[35%] left-[5%] font-mono text-[11px] py-1.5 px-3 bg-gray-900/60 border border-indigo-500/15 rounded-md opacity-50 backdrop-blur-sm z-[1]" aria-hidden="true">
+    <div class="hidden md:block absolute top-[35%] left-[5%] font-mono text-[11px] py-1.5 px-3 bg-gray-900/60 border border-indigo-500/15 rounded-md opacity-50 backdrop-blur-sm z-[1]" aria-hidden="true">
       <span class="text-amber-400">let</span> <span class="text-cyan-400">passion</span> = <span class="text-pink-400">true</span>;
     </div>
 

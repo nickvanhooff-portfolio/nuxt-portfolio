@@ -73,37 +73,58 @@
         </button>
       </div>
 
-      <!-- Mobile Navigation -->
+      <!-- Mobile Navigation — full-screen overlay -->
       <Transition
-        enter-active-class="transition-all duration-300 ease-out"
-        enter-from-class="opacity-0"
-        enter-to-class="opacity-100"
-        leave-active-class="transition-all duration-300 ease-out"
-        leave-from-class="opacity-100"
-        leave-to-class="opacity-0"
+        enter-active-class="transition-all duration-400 ease-out"
+        enter-from-class="opacity-0 scale-[0.98]"
+        enter-to-class="opacity-100 scale-100"
+        leave-active-class="transition-all duration-300 ease-in"
+        leave-from-class="opacity-100 scale-100"
+        leave-to-class="opacity-0 scale-[0.98]"
       >
         <div
           v-if="isMobileMenuOpen"
-          class="md:hidden fixed inset-0 z-40"
+          class="md:hidden fixed inset-0 z-40 bg-neutral flex flex-col"
         >
-          <div
-            class="absolute inset-0 bg-primary/20 backdrop-blur-sm"
-            @click="closeMobileMenu"
-          />
-          <div
-            class="absolute top-20 left-0 right-0 bg-white border-t border-neutral-gray shadow-xl flex flex-col py-6 animate-slide-down"
-          >
+          <!-- Top bar: logo + close -->
+          <div class="flex items-center justify-between px-6 py-4 border-b border-neutral-gray/30">
+            <span class="text-xl font-title font-bold text-primary tracking-tight">
+              <span class="text-accent font-bold">&lt;</span>Portfolio<span class="text-accent font-bold">/&gt;</span>
+            </span>
+            <button
+              class="w-10 h-10 flex items-center justify-center text-primary/60 hover:text-primary transition-colors"
+              aria-label="Sluit menu"
+              @click="closeMobileMenu"
+            >
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <line x1="4" y1="4" x2="16" y2="16" />
+                <line x1="16" y1="4" x2="4" y2="16" />
+              </svg>
+            </button>
+          </div>
+
+          <!-- Nav links -->
+          <nav class="flex-1 flex flex-col justify-center px-8 gap-1">
             <a
-              v-for="link in navLinks"
+              v-for="(link, index) in navLinks"
               :key="link.path"
               :href="link.path === '/' ? '#' : `#${link.id}`"
-              class="px-6 py-4 text-base font-medium text-primary transition-colors duration-200 cursor-pointer"
-              :class="isActiveRoute(link.path) ? 'bg-neutral-light text-accent border-l-3 border-accent' : 'border-l-3 border-transparent hover:bg-neutral-light hover:text-accent hover:border-accent'"
+              class="mobile-nav-item group flex items-baseline gap-4 py-3 cursor-pointer"
+              :style="{ animationDelay: `${0.05 + index * 0.06}s` }"
+              :class="isActiveRoute(link.path) ? 'text-accent' : 'text-primary'"
               @click.prevent="scrollToSection(link.id); closeMobileMenu()"
             >
-              {{ link.label }}
+              <span class="font-mono text-xs text-accent/60 tabular-nums w-6 flex-shrink-0 group-hover:text-accent transition-colors duration-200">
+                {{ String(index + 1).padStart(2, '0') }}
+              </span>
+              <span class="font-title font-bold text-[2.6rem] leading-none tracking-tight transition-colors duration-200 group-hover:text-accent">
+                {{ link.label }}
+              </span>
             </a>
-          </div>
+          </nav>
+
+          <!-- Bottom accent line -->
+          <div class="mx-8 mb-10 h-px bg-gradient-to-r from-accent/40 via-accent to-accent/40" />
         </div>
       </Transition>
     </nav>
@@ -118,6 +139,7 @@ const isMobileMenuOpen = ref(false)
 const navLinks = [
   { label: 'Home', path: '/', id: 'home' },
   { label: 'Projects', path: '/projects', id: 'projects' },
+  { label: 'Tech Stack', path: '/tech-stack', id: 'tech-stack' },
   { label: 'About', path: '/about', id: 'about' },
   { label: 'Contact', path: '/contact', id: 'contact' },
 ]
@@ -191,11 +213,11 @@ watch(() => useRoute().path, () => {
 </script>
 
 <style scoped>
-/* Custom animations */
-@keyframes slideDown {
+/* Mobile nav item stagger entrance */
+@keyframes navItemIn {
   from {
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translateY(16px);
   }
   to {
     opacity: 1;
@@ -203,13 +225,9 @@ watch(() => useRoute().path, () => {
   }
 }
 
-.animate-slide-down {
-  animation: slideDown 0.3s ease-out;
-}
-
-/* Custom border-left width */
-.border-l-3 {
-  border-left-width: 3px;
+.mobile-nav-item {
+  opacity: 0;
+  animation: navItemIn 0.35s ease-out forwards;
 }
 </style>
 
