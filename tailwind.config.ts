@@ -13,6 +13,12 @@ export default {
     extend: {
       colors: {
         navy: '#1a365d',
+        carbon: '#141821',
+        ink: '#1a1f2e',
+        bronze: '#b08968',
+        'bronze-light': '#c9a882',
+        cream: '#faf8f5',
+        'warm-gray': '#e8e4df',
         primary: {
           DEFAULT: '#0E0E0E',
           light: '#1A1A1A',
@@ -32,6 +38,8 @@ export default {
       fontFamily: {
         title: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
         body: ['system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
+        display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+        dm: ['"DM Sans"', 'system-ui', 'sans-serif'],
       },
       fontSize: {
         'hero': ['72px', { lineHeight: '1.1', fontWeight: '700' }],
