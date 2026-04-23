@@ -4,10 +4,24 @@
         <!-- Hero Section -->
       <section class="relative">
 
-        <div
-          v-if="project.featuredImage"
-          class="relative w-full h-[40vh] md:h-[55vh] lg:h-[40vh] overflow-hidden"
-        >
+      <!-- HERO IMAGE -->
+      <div
+        v-if="project.featuredImage"
+        class="relative w-full overflow-hidden"
+      >
+       <div
+  class="
+    relative
+    w-full
+    aspect-[16/9]
+    md:aspect-[21/9]
+    max-h-[420px]
+    md:max-h-[520px]
+    lg:max-h-[600px]
+    xl:max-h-[650px]
+    mx-auto
+  "
+>
           <NuxtImg
             :src="urlFor(project.featuredImage).width(1920).url()"
             :alt="project.title"
@@ -17,13 +31,13 @@
             loading="eager"
             fetchpriority="high"
           />
-
-          <!-- Overlay -->
-          <div class="absolute inset-0 bg-gradient-to-b from-transparent via-primary/20 to-primary/80" />
         </div>
 
+        <!-- Overlay -->
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-primary/20 to-primary/80"/>
+      </div>
       <!-- Project Header Overlay -->
-      <div class="container-content relative -mt-16 md:-mt-48 z-10">
+      <div class="container-content relative -mt-12 md:-mt-32 z-10">
         <div class="bg-neutral rounded-2xl shadow-2xl p-8 md:p-12 border border-neutral-gray">
           <!-- Back link -->
           <NuxtLink
