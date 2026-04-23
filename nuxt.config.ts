@@ -91,6 +91,8 @@ export default defineNuxtConfig({
         'frame-src': [
           'https://www.youtube.com',
           'https://youtube.com',
+          'https://vercel.live',
+          'https://*.vercel.live',
         ],
       },
     },
