@@ -5,12 +5,12 @@
       <!-- Featured Image -->
       <div
         v-if="project.featuredImage"
-        class="relative w-full h-[35vh] md:h-[50vh] min-h-[260px] md:min-h-[400px] max-h-[600px] overflow-hidden"
+        class="relative w-full h-[280px] md:h-[50vh] md:min-h-[400px] md:max-h-[600px] overflow-hidden"
       >
         <NuxtImg
           :src="urlFor(project.featuredImage).width(1920).height(1080).url()"
           :alt="project.title"
-          class="absolute inset-0 w-full h-full object-cover"
+          class="absolute inset-0 w-full h-full object-cover object-top"
           sizes="100vw"
           width="1920"
           height="1080"
@@ -22,7 +22,7 @@
       </div>
 
       <!-- Project Header Overlay -->
-      <div class="container-content relative -mt-8 md:-mt-48 z-10">
+      <div class="container-content relative -mt-16 md:-mt-48 z-10">
         <div class="bg-neutral rounded-2xl shadow-2xl p-8 md:p-12 border border-neutral-gray">
           <!-- Back link -->
           <NuxtLink
