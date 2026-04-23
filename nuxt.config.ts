@@ -48,6 +48,7 @@ export default defineNuxtConfig({
   // Most headers are enabled by default, only CSP needs custom configuration
   security: {
     headers: {
+      crossOriginEmbedderPolicy: false,
       permissionsPolicy: {
         fullscreen: ['*'],
       },
