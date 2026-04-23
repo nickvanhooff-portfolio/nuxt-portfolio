@@ -25,7 +25,7 @@
           <NuxtImg
             :src="urlFor(project.featuredImage).width(1920).url()"
             :alt="project.title"
-            class="absolute inset-0 w-full h-full object-cover"
+            class="absolute inset-0 w-full h-full object-cover object-top scale-105 md:scale-100"
             sizes="100vw"
             format="webp"
             loading="eager"
