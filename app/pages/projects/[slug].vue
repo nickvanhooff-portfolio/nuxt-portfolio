@@ -1,27 +1,26 @@
 <template>
   <main v-if="project" class="min-h-screen bg-neutral">
     <!-- Hero Section with Featured Image -->
-    <section class="relative">
-      <!-- Featured Image -->
-      <div
-        v-if="project.featuredImage"
-        class="relative w-full aspect-[16/9] md:aspect-auto md:h-[50vh] md:min-h-[400px] md:max-h-[600px] overflow-hidden"
-      >
-        <div class="absolute inset-0">
+        <!-- Hero Section -->
+      <section class="relative">
+
+        <div
+          v-if="project.featuredImage"
+          class="relative w-full h-[40vh] md:h-[55vh] lg:h-[40vh] overflow-hidden"
+        >
           <NuxtImg
-            :src="urlFor(project.featuredImage).width(1920).height(1080).url()"
+            :src="urlFor(project.featuredImage).width(1920).url()"
             :alt="project.title"
-            class="w-full h-full object-cover object-center md:object-top"
+            class="absolute inset-0 w-full h-full object-cover"
             sizes="100vw"
-            width="1920"
-            height="1080"
             format="webp"
             loading="eager"
             fetchpriority="high"
           />
+
+          <!-- Overlay -->
+          <div class="absolute inset-0 bg-gradient-to-b from-transparent via-primary/20 to-primary/80" />
         </div>
-        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-primary/20 to-primary/80" />
-      </div>
 
       <!-- Project Header Overlay -->
       <div class="container-content relative -mt-16 md:-mt-48 z-10">
