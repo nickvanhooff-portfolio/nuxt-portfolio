@@ -10,7 +10,7 @@
         <NuxtImg
           :src="urlFor(project.featuredImage).width(1920).height(1080).url()"
           :alt="project.title"
-          class="absolute inset-0 w-full h-full object-cover object-top"
+          class="absolute inset-0 w-full h-full object-cover object-center md:object-top"
           sizes="100vw"
           width="1920"
           height="1080"
