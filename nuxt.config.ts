@@ -48,6 +48,9 @@ export default defineNuxtConfig({
   // Most headers are enabled by default, only CSP needs custom configuration
   security: {
     headers: {
+      permissionsPolicy: {
+        fullscreen: ['*'],
+      },
       // Content Security Policy - only configure what you actually use
       contentSecurityPolicy: {
         'default-src': ["'self'"],
@@ -76,6 +79,10 @@ export default defineNuxtConfig({
           "'self'",
           'https://cdn.sanity.io', // Sanity CDN
           'https://*.apicdn.sanity.io', // Sanity API (project-specific subdomain)
+        ],
+        'frame-src': [
+          'https://www.youtube.com',
+          'https://youtube.com',
         ],
       },
     },

@@ -108,6 +108,13 @@
       </div>
     </section>
 
+    <!-- Iframe Embed -->
+    <div v-if="project.iframeCode" class="container-content mt-8">
+      <div class="bg-neutral rounded-2xl shadow-lg p-6 border border-neutral-gray">
+        <div class="iframe-embed" v-html="project.iframeCode" />
+      </div>
+    </div>
+
     <!-- Main Content -->
     <div class="container-content py-16 space-y-16">
       <!-- Tech Stack -->
@@ -262,6 +269,7 @@ const PROJECT_QUERY = groq`*[_type == "project" && slug.current == $slug][0] {
   endDate,
   status,
   tags,
+  iframeCode,
   content,
   pageBuilder[] {
     ...,
@@ -393,4 +401,14 @@ const formatDate = (dateString: string): string => {
   return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
 }
 </script>
+
+<style scoped>
+.iframe-embed :deep(iframe) {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  border-radius: 0.75rem;
+  display: block;
+}
+</style>
 
