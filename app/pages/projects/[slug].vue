@@ -5,7 +5,7 @@
       <!-- Featured Image -->
       <div
         v-if="project.featuredImage"
-        class="relative w-full h-[280px] md:h-[50vh] md:min-h-[400px] md:max-h-[600px] overflow-hidden"
+        class="relative w-full aspect-[16/9] md:aspect-auto md:h-[50vh] md:min-h-[400px] md:max-h-[600px] overflow-hidden"
       >
         <div class="absolute inset-0">
           <NuxtImg
