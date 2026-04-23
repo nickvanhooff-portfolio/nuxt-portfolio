@@ -59,6 +59,8 @@ export default defineNuxtConfig({
           "'unsafe-inline'", // Required for Nuxt
           ...(process.dev ? ["'unsafe-eval'"] : []), // Only in dev for HMR
           'https://cdn.sanity.io', // Sanity CDN
+          'https://www.youtube.com',
+          'https://s.ytimg.com',
         ],
         'style-src': [
           "'self'",
@@ -69,6 +71,8 @@ export default defineNuxtConfig({
           "'self'",
           'data:',
           'https://cdn.sanity.io', // Sanity CDN (handles both cdn.sanity.io and *.apicdn.sanity.io)
+          'https://i.ytimg.com',
+          'https://*.ytimg.com',
         ],
         'font-src': [
           "'self'",
@@ -79,6 +83,8 @@ export default defineNuxtConfig({
           "'self'",
           'https://cdn.sanity.io', // Sanity CDN
           'https://*.apicdn.sanity.io', // Sanity API (project-specific subdomain)
+          'https://www.youtube.com',
+          'https://*.youtube.com',
         ],
         'frame-src': [
           'https://www.youtube.com',
