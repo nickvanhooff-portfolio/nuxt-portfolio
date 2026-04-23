@@ -7,17 +7,19 @@
         v-if="project.featuredImage"
         class="relative w-full h-[280px] md:h-[50vh] md:min-h-[400px] md:max-h-[600px] overflow-hidden"
       >
-        <NuxtImg
-          :src="urlFor(project.featuredImage).width(1920).height(1080).url()"
-          :alt="project.title"
-          class="absolute inset-0 w-full h-full object-cover object-center md:object-top"
-          sizes="100vw"
-          width="1920"
-          height="1080"
-          format="webp"
-          loading="eager"
-          fetchpriority="high"
-        />
+        <div class="absolute inset-0">
+          <NuxtImg
+            :src="urlFor(project.featuredImage).width(1920).height(1080).url()"
+            :alt="project.title"
+            class="w-full h-full object-cover object-center md:object-top"
+            sizes="100vw"
+            width="1920"
+            height="1080"
+            format="webp"
+            loading="eager"
+            fetchpriority="high"
+          />
+        </div>
         <div class="absolute inset-0 bg-gradient-to-b from-transparent via-primary/20 to-primary/80" />
       </div>
 
