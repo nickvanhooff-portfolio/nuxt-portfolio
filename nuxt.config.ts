@@ -61,6 +61,8 @@ export default defineNuxtConfig({
           'https://cdn.sanity.io', // Sanity CDN
           'https://www.youtube.com',
           'https://s.ytimg.com',
+          'https://vercel.live',
+          'https://*.vercel.live',
         ],
         'style-src': [
           "'self'",
